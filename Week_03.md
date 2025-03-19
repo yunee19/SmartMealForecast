@@ -7,7 +7,7 @@
       - **File: Dataset_02** : [Food Choices Dataset](https://www.kaggle.com/datasets/borapajo/food-choices?utm_source=chatgpt.com)
       -  **File: Dataset_03** : [Student Food Survey Dataset](https://www.kaggle.com/datasets/mlomuscio/student-food-survey?utm_source=chatgpt.com)
 
-    - **Dacon:** [Dacon Competition](https://dacon.io/competitions/official/235743/overview/description)에서 유용한 데이터셋을 찾았으며, 이를 본 프로젝트에 적용할 수 있습니다.
+    - **Dacon:**  **File: Dataset_01**  : [Dacon Competition](https://dacon.io/competitions/official/235743/overview/description)에서 유용한 데이터셋을 찾았으며, 이를 본 프로젝트에 적용할 수 있습니다.
   
   - **해결 방안:** 위의 출처에서 데이터를 다운로드하여 분석을 위한 전처리를 진행할 예정입니다.
 
