@@ -3,7 +3,10 @@
 ## 1. **데이터 수집**
 - **고객/주문 데이터:**
   - **데이터 출처:**
-    - **Kaggle:** 고객의 음식 선택에 대한 분석을 위해 [Food Choices - Kaggle](https://www.kaggle.com/datasets/borapajo/food-choices)에서 적합한 데이터셋을 찾았습니다.
+    - **Kaggle:**
+      - **File: Dataset_02** : [Food Choices Dataset](https://www.kaggle.com/datasets/borapajo/food-choices?utm_source=chatgpt.com)
+      -  **File: Dataset_03** : [Student Food Survey Dataset](https://www.kaggle.com/datasets/mlomuscio/student-food-survey?utm_source=chatgpt.com)
+
     - **Dacon:** [Dacon Competition](https://dacon.io/competitions/official/235743/overview/description)에서 유용한 데이터셋을 찾았으며, 이를 본 프로젝트에 적용할 수 있습니다.
   
   - **해결 방안:** 위의 출처에서 데이터를 다운로드하여 분석을 위한 전처리를 진행할 예정입니다.
