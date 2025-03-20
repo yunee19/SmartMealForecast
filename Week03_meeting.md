@@ -12,10 +12,11 @@
           - **File: Dataset_02** : [Food Choices Dataset](https://www.kaggle.com/datasets/borapajo/food-choices?utm_source=chatgpt.com)
           - **File: Dataset_03** : [Student Food Survey Dataset](https://www.kaggle.com/datasets/mlomuscio/student-food-survey?utm_source=chatgpt.com)
       - Dacon  
-        - **Dataset_01:** Dacon Competition 관련 데이터  
-    - **진행 상황:** 3개의 데이터셋을 찾았으나, Dataset_01가 가장 적절할 것 판단.  
+        - **Dataset_01:** Dacon Competition 관련 데이터  [Dacon Competition](https://dacon.io/competitions/official/235743/overview/description)
+    - **진행 상황:** 3개의 데이터셋을 찾았으나, Dataset_01가 가장 적절할 것 판단.
+
   - **날씨 데이터:**  
-    - **출처:** KMA Climate  
+    - **출처:**  기상청 지상자료개방포털  [KMA Climate](https://data.kma.go.kr/climate/RankState/selectRankStatisticsDivisionList.do?pgmNo=179) 
     - **문제:** 데이터를 표 형식으로 처리하는 과정에서 오류 및 불완전한 데이터 발생  
     - **해결 방안:** 한글 지원 소프트웨어 설치 및 변환 도구 활용 예정  
   - **공휴일 데이터:**  
