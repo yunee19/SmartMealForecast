@@ -8,9 +8,9 @@
 - **데이터 수집**  
   - **고객/주문 데이터:**  
     - **출처:**  
-      - Kaggle  
-        - **Dataset_02:** Food Choices Dataset  
-        - **Dataset_03:** Student Food Survey Dataset  
+      - Kaggle
+          - **File: Dataset_02** : [Food Choices Dataset](https://www.kaggle.com/datasets/borapajo/food-choices?utm_source=chatgpt.com)
+          - **File: Dataset_03** : [Student Food Survey Dataset](https://www.kaggle.com/datasets/mlomuscio/student-food-survey?utm_source=chatgpt.com)
       - Dacon  
         - **Dataset_01:** Dacon Competition 관련 데이터  
     - **진행 상황:** 3개의 데이터셋을 찾았으나, Dataset_01가 가장 적절할 것 판단.  
