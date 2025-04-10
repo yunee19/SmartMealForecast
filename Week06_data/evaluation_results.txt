@@ -1,0 +1,15 @@
+XGBoost Lunch Prediction
+  MSE: 17741.77
+  MAE: 95.96
+
+XGBoost Dinner Prediction
+  MSE: 9100.18
+  MAE: 65.21
+
+Baseline Lunch Prediction
+  MSE: 42360.86
+  MAE: 163.36
+
+Baseline Dinner Prediction
+  MSE: 19838.94
+  MAE: 97.74
