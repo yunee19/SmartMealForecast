@@ -1,7 +1,0 @@
-🔹 Random Forest Lunch Prediction
-  MSE: 16467.80
-  MAE: 90.73
-
-🔹 Random Forest Dinner Prediction
-  MSE: 8606.07
-  MAE: 60.36

@@ -1,0 +1,14 @@
+🔸 XGBoost Lunch
+  MSE: 17741.77, MAE: 95.96
+🔸 XGBoost Dinner
+  MSE: 9100.18, MAE: 65.21
+
+🔹 Random Forest Lunch
+  MSE: 16604.13, MAE: 91.39
+🔹 Random Forest Dinner
+  MSE: 8574.88, MAE: 59.80
+
+📌 Baseline Lunch
+  MSE: 42360.86, MAE: 163.36
+📌 Baseline Dinner
+  MSE: 19838.94, MAE: 97.74
