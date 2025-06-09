@@ -89,14 +89,24 @@ SmartMealForecast/
 ---
 
 * 총 1205행 데이터, 출처는 Dacon (데이터 고객/주문 : [Dacon 링크](https://dacon.io/competitions/official/235743/overview/description?utm_source=chatgpt.com))
-* ![image](https://github.com/user-attachments/assets/afa31f2b-610b-4c56-9c2d-0a33f739559e)
-* 주로 쓰는 데이 : 
-
 * 날씨 데이터 출처 : [기상청 데이터](https://data.kma.go.kr/climate/RankState/selectRankStatisticsDivisionList.do?pgmNo=179)
 * 휴일 및 특별일 데이터는 달력에서 수집
+    ![image](https://github.com/user-attachments/assets/2163fde4-b0c9-45af-9b9d-cfce84f9cb9b)
 
-전처리:
 * 엑셀을 이용해 분석하기 쉽게 데이터를 분리하고 필요한 원본 데이터를 병합하여 `merged_data.csv` 파일 생성
+( Lunch_Menu, Dinner_Menu를 모델의 정확률 높이기 위해 'Lunch_Rice', 'Lunch_Soup', 'Lunch_Main_Dish', 'Lunch_Side_Dish_1',
+    'Lunch_Side_Dish_2', 'Lunch_Drink', 'Lunch_Kimchi', 'Lunch_side_Dish_3',
+    'Dinner_Rice', 'Dinner_Soup', 'Dinner_Main_Dish', 'Dinner_Side_Dish_1',
+    'Dinner_Side_Dish_2', 'Dinner_Side_Dish_3', 'Dinner_Drink', 'Dinner_Kimchi'로 분리 )
+  ![image](https://github.com/user-attachments/assets/7fb4064c-2c33-45d9-9e95-7351c3bd7053)
+
+
+* barplot_special_day_lunch_count_customers.png에 따르면 특별한 날에 고객수가 많이 늘어나는 것을 보인다 그리고 그래프에 나오는 것처럼 월요일(2018-07-23, 2018-08-06..)에 고객수가 늘어나는 것으로 본인다
+* ![image](https://github.com/user-attachments/assets/e42c7a03-5800-410d-9830-d763d9db1c21)
+
+* 
+* ![barplot_2019_feb_mar_apr_temp_vs_lunch](https://github.com/user-attachments/assets/44f879fa-e830-447e-8e25-4e9189761e6a)
+
 
 모델 선택: 
 ---
