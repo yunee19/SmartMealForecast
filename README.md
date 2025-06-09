@@ -1,5 +1,5 @@
 
-# SmartMealForecast 프로젝트 README
+# SmartMealForecast 프로젝트 
 
 ## 1. 프로젝트 소개  
 작품명: SmartMealForecast (식수 예측 시스템)  
@@ -85,39 +85,25 @@ SmartMealForecast/
 
 ---
 
-## 5. 실행 방법  
-1. 필요한 라이브러리 설치  
-```bash
-pip install -r requirements.txt
-````
-
-2. 데이터 준비: `data/` 폴더에 원본 데이터 저장
-3. 모델 훈련 및 예측 실행
-
-```bash
-python prediction/train.py  
-python prediction/prediction.py
-```
-
-4. 평가 및 시각화 실행
-
-```bash
-python evaluation/evaluation.py  
-python evaluation/graph.py
-```
-
+## 5. 데이터 탐색 및 전처리
 ---
-
-## 6. 데이터 설명
 
 * 총 1205행 데이터, 출처는 Dacon (데이터 고객/주문 : [Dacon 링크](https://dacon.io/competitions/official/235743/overview/description?utm_source=chatgpt.com))
+* ![image](https://github.com/user-attachments/assets/afa31f2b-610b-4c56-9c2d-0a33f739559e)
+* 주로 쓰는 데이 : 
+
 * 날씨 데이터 출처 : [기상청 데이터](https://data.kma.go.kr/climate/RankState/selectRankStatisticsDivisionList.do?pgmNo=179)
 * 휴일 및 특별일 데이터는 달력에서 수집
+
+전처리:
 * 엑셀을 이용해 분석하기 쉽게 데이터를 분리하고 필요한 원본 데이터를 병합하여 `merged_data.csv` 파일 생성
 
+모델 선택: 
 ---
+## 5. 코드
 
-## 7. train.py 파일 상세 분석
+
+### 1) train.py 파일 상세 분석
 
 **train.py 주요 목적**
 
@@ -262,3 +248,16 @@ with open(os.path.join(MODEL_DIR, 'xgboost_dinner_model.pkl'), 'wb') as f:
 * 학습된 모델을 pkl 파일로 저장하여 추후 예측에 활용 가능
 
 ---
+## 6. 실행 방법  
+1. 필요한 라이브러리 설치  
+```bash
+pip install -r requirements.txt
+````
+
+2. 데이터 준비: `data/` 폴더에 원본 데이터 저장
+3. 모델 훈련 및 예측 실행
+
+```bash
+python prediction/train.py  
+python prediction/prediction.py
+```
