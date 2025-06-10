@@ -63,18 +63,9 @@ SmartMealForecast/
 └── README.md                   ← 프로젝트 설명서 (현재 파일)
 
 ````
----
 
-## 3. 사용한 기술 및 라이브러리  
-- Python 3.x  
-- Pandas, NumPy (데이터 처리)  
-- Scikit-learn (머신러닝 모델)  
-- XGBoost (부스팅 모델)  
-- Matplotlib, Seaborn (데이터 시각화)  
 
----
-
-## 4. 주요 기능 및 역할  
+## 3. 주요 기능 및 역할  
 - 데이터 전처리 및 인코딩 (One-hot, 단어 빈도 등)  
 - 점심 및 저녁 고객 수 예측 모델 훈련 및 예측  
 - 다양한 머신러닝 알고리즘 적용 (XGBoost, Random Forest 등)  
@@ -83,7 +74,7 @@ SmartMealForecast/
 
 ---
 
-## 5. 데이터 탐색 및 전처리
+## 4. 데이터 탐색 및 전처리
 ---
 ### - 데이터 탐색
 * 총 1205행 데이터, 출처는 Dacon (데이터 고객/주문 : [Dacon 링크](https://dacon.io/competitions/official/235743/overview/description?utm_source=chatgpt.com))
@@ -125,7 +116,6 @@ for col in df.select_dtypes(include=[np.number]).columns:
     df[col].fillna(df[col].mean(), inplace=True)
 ```
 
-모델 선택: 
 ---
 ## 5. 코드
 
@@ -483,27 +473,6 @@ df['Dinner_Pred_Baseline'] = dinner_mean
 * 점심, 저녁 인원수 평균값 계산 후 베이스라인 예측값으로 설정
 
 ---
-
-```python
-save_path = os.path.join(RESULTS_DIR, "predictions_all_data.csv")
-df.to_csv(save_path, index=False)
-
-print("Saved to :", save_path)
-print(df[['Lunch_Count', 'Lunch_Pred_XGB', 'Lunch_Pred_RF', 'Lunch_Pred_Baseline']].head())
-```
-
-* 결과 CSV 파일로 저장
-* 저장 위치 및 예측값 일부 출력
-
----
-
-## 요약
-
-* 데이터 로딩 → 메뉴 원-핫 인코딩 → 특성 데이터 준비 → 모델 로딩 → 예측 수행 → 결과 저장
-* XGBoost와 랜덤포레스트 모델로 점심/저녁 인원수 예측
-* 단순 평균 기반 베이스라인과 비교 평가 가능
-
-```
 ## 6. 실행 방법  
 1. 필요한 라이브러리 설치  
 ```bash
@@ -521,16 +490,23 @@ python prediction/prediction.py
 ---
 - 예측 결과: 
 ![image](https://github.com/user-attachments/assets/fb8d1c12-a921-4036-9d2d-8ba202f6c9b8)
-
+* 예측결과 정상적으로 나노는 것으로 보인다
 - 에러 지표:
 ![mae_comparison_improved_chart](https://github.com/user-attachments/assets/37a851ea-7a81-4298-ae62-d568e774e94a)
-
-- 결론
+* 에러 지표에 따르면 XGB과 RF모델이용해 예측하는 데에 MAE와 Normalized MAE 지수가 낮게 나왔다
+### - 결론
 XGB 모델이 점심/저녁 모두에서 가장 낮은 MAE → 가장 정확한 예측.
 RF도 성능이 괜찮지만 XGB보다 약간 낮음.
-Baseline은 오차가 크고, 정규화 MAE도 높음 → 단순 평균 예측은 효과적이지 않음  
-결론: XGB 모델이 현재 데이터에 대해 가장 신뢰할 수 있는 예측 모델입니다.
 
+이처럼 **SmartMealForecast** 프로젝트는 날씨, 휴일, 메뉴 등 실제 요인을 기반으로 하루 식사량을 예측하는 시스템을 성공적으로 구축했습니다. **XGBoost** 및 **Random Forest**와 같은 머신러닝 모델을 적용하여 비선형 및 다차원 데이터 처리에서 높은 효율성을 보였습니다.
+
+데이터 전처리, 피처 인코딩(One-hot 인코딩, 단어 빈도 인코딩), 그리고 **MAE**, **MSE**와 같은 지표를 활용한 모델 성능 평가를 통해, 공동 주방 관리에 실질적으로 적용 가능한 합리적인 정확도의 예측 결과를 얻었습니다.
+
+### - 향후 개발 방향
+
+* 식전 등록이나 특이 사항 정보 등 실시간 데이터를 더 많이 통합합니다.
+* 딥러닝 기술을 활용하여 예측 모델을 개선합니다.
+* 관리자가 신속하게 모니터링하고 조정할 수 있도록 시스템을 웹 인터페이스 또는 앱에 통합합니다.
 ---
 
 ## 8. Author: Nguyen Thi Dung ( 응웬티둥)
