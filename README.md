@@ -486,8 +486,7 @@ python prediction/prediction.py
 ---
 - 예측 결과: 
 ![image](https://github.com/user-attachments/assets/fb8d1c12-a921-4036-9d2d-8ba202f6c9b8)
-* 예측결과 정상적으로 나노는 것으로 보인다
-  
+* 예측결과를 생각하는 대로 잘 나왔습니다.  
  ![scatter_dinner_xgb](https://github.com/user-attachments/assets/20f3bfd1-267d-4653-9cff-d17a4fed1509)
 ![scatter_lunch_xgb](https://github.com/user-attachments/assets/ea3761e9-5bb5-49b5-8205-be416db16fcc)
 
