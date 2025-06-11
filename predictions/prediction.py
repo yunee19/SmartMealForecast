@@ -66,4 +66,6 @@ save_path = os.path.join(RESULTS_DIR, "predictions_all_data.csv")
 df.to_csv(save_path, index=False)
 
 print("Saved to :", save_path)
-print(df[['Lunch_Count', 'Lunch_Pred_XGB', 'Lunch_Pred_RF', 'Lunch_Pred_Baseline']].head())
+print(df[[ 'Lunch_Count', 'Lunch_Pred_XGB', 'Lunch_Pred_RF', 'Lunch_Pred_Baseline']].tail())
+
+
