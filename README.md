@@ -53,9 +53,7 @@ SmartMealForecast/
 │   ├── 2020\_boxplot\_holiday\_total\_customers.png
 │   ├── 2020\_boxplot\_specialday\_total\_customers\_improved.png
 │   ├── 2020\_scatter\_avgtemp\_by\_month.png
-│   ├── scatter\_avgtemp\_by\_month\_all\_years.png
-│   ├── 2020\_barplot\_season\_total\_customers.png
-│   └── 2020\_barplot\_month\_total\_customers.png
+│   ├── ... 등등
 
 ├── prediction\_result/          ← 예측 결과 저장
 │   └── predictions\_all\_data.csv
