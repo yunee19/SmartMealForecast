@@ -486,6 +486,9 @@ python prediction/prediction.py
 - 예측 결과: 
 ![image](https://github.com/user-attachments/assets/fb8d1c12-a921-4036-9d2d-8ba202f6c9b8)
 * 예측결과 정상적으로 나노는 것으로 보인다
+* ![scatter_dinner_xgb](https://github.com/user-attachments/assets/20f3bfd1-267d-4653-9cff-d17a4fed1509)
+![scatter_lunch_xgb](https://github.com/user-attachments/assets/ea3761e9-5bb5-49b5-8205-be416db16fcc)
+
 - 에러 지표:
 ![mae_comparison_improved_chart](https://github.com/user-attachments/assets/37a851ea-7a81-4298-ae62-d568e774e94a)
 * 에러 지표에 따르면 XGB과 RF모델이용해 예측하는 데에 MAE와 Normalized MAE 지수가 낮게 나왔다
