@@ -486,24 +486,24 @@ python prediction/prediction.py
 ---
 - 예측 결과: 
 ![image](https://github.com/user-attachments/assets/fb8d1c12-a921-4036-9d2d-8ba202f6c9b8)
-* 예측결과를 생각하는 대로 잘 나왔습니다.  
+* 예측 결과는 전반적으로 초기 기대에 부합하였습니다.
  ![scatter_dinner_xgb](https://github.com/user-attachments/assets/20f3bfd1-267d-4653-9cff-d17a4fed1509)
 ![scatter_lunch_xgb](https://github.com/user-attachments/assets/ea3761e9-5bb5-49b5-8205-be416db16fcc)
 
 - 에러 지표:
 ![mae_comparison_improved_chart](https://github.com/user-attachments/assets/37a851ea-7a81-4298-ae62-d568e774e94a)
-* 에러 지표에 따르면 XGB과 RF모델이용해 예측하는 데에 MAE와 Normalized MAE 지수가 낮게 나왔다
+* XGBoost(XGB)와 Random Forest(RF) 모두 낮은 MAE 및 정규화 MAE 수치를 기록하며 양호한 예측 성능을 보였습니다.
+* 특히 XGBoost는 점심과 저녁 시간대 모두에서 가장 낮은 MAE 값을 기록하며 뛰어난 성능을 입증하였고, RF 모델 역시 성능이 우수하지만 XGB보다 소폭 낮은 결과를 보였습니다.
 ### - 결론
-XGB 모델이 점심/저녁 모두에서 가장 낮은 MAE → 가장 정확한 예측.
-RF도 성능이 괜찮지만 XGB보다 약간 낮음.
+* XGB 모델이 점심/저녁 모두에서 가장 낮은 MAE → 가장 정확한 예측.
+* RF도 성능이 괜찮지만 XGB보다 약간 낮음.
 
-이처럼 **SmartMealForecast** 프로젝트는 날씨, 휴일, 메뉴 등 실제 요인을 기반으로 하루 식사량을 예측하는 시스템을 성공적으로 구축했습니다. **XGBoost** 및 **Random Forest**와 같은 머신러닝 모델을 적용하여 비선형 및 다차원 데이터 처리에서 높은 효율성을 보였습니다.
+* 이처럼 SmartMealForecast 프로젝트는 날씨, 휴일, 메뉴 종류 등의 다양한 현실적 요인을 바탕으로
+일일 식수량을 예측하는 시스템을 성공적으로 구축하였습니다.
 
-데이터 전처리, 피처 인코딩(One-hot 인코딩, 단어 빈도 인코딩), 그리고 **MAE**, **MSE**와 같은 지표를 활용한 모델 성능 평가를 통해, 공동 주방 관리에 실질적으로 적용 가능한 합리적인 정확도의 예측 결과를 얻었습니다.
-
+* GBoost와 Random Forest와 같은 최신 머신러닝 모델을 활용하여 비선형적이며 다차원적인 데이터를 효과적으로 처리할 수 있었으며, One-hot Encoding, 빈도 기반 인코딩 등 다양한 특성 인코딩 기법을 적용하고 MAE, MSE 등 지표를 기반으로 평가를 수행한 결과, 현장에 적용 가능한 신뢰도 높은 결과를 도출할 수 있었습니다.
 ### - 향후 개발 방향
 * 요일요소와 같은 정확률 높일 수 있는 방법을 찾아 예측 모델을 개선합니다.
-* 식전 등록이나 특이 사항 정보 등 실시간 데이터를 더 많이 통합합니다.
 ---
 
 ## 8. Author: Nguyen Thi Dung ( 응웬티둥)
