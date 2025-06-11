@@ -392,6 +392,9 @@ joblib.dump(model_dinner_rf, os.path.join(MODEL_DIR, "ranfor_dinner_model.pkl"))
 * Counter: 데이터 빈도 계산용
 
 
+## 점심과 저녁 메뉴 관련 컬럼 리스트 정의
+
+---
 ```python
 menu_columns = [
     'Lunch_Rice', 'Lunch_Soup', 'Lunch_Main_Dish', 'Lunch_Side_Dish_1',
@@ -400,10 +403,6 @@ menu_columns = [
     'Dinner_Side_Dish_2', 'Dinner_Side_Dish_3', 'Dinner_Drink', 'Dinner_Kimchi'
 ]
 ```
-
-* 점심과 저녁 메뉴 관련 컬럼 리스트 정의
-
----
 
 ```python
 all_menus = pd.concat([df[col] for col in menu_columns])
@@ -440,6 +439,7 @@ X_all.columns = X_all.columns.str.replace(r'[\[\]<>]', '_', regex=True)
 
 ---
 
+## 저장된 모델 불러오기
 ```python
 model_lunch_xgb = joblib.load(os.path.join(ROOT_DIR, "models", "xgboost_lunch_model.pkl"))
 model_dinner_xgb = joblib.load(os.path.join(ROOT_DIR, "models", "xgboost_dinner_model.pkl"))
@@ -451,6 +451,7 @@ model_dinner_rf = joblib.load(os.path.join(ROOT_DIR, "models", "ranfor_dinner_mo
 
 ---
 
+## 예측 실행
 ```python
 df['Lunch_Pred_XGB'] = model_lunch_xgb.predict(X_all).round().astype(int)
 df['Dinner_Pred_XGB'] = model_dinner_xgb.predict(X_all).round().astype(int)
