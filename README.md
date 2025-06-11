@@ -474,13 +474,8 @@ df['Dinner_Pred_Baseline'] = dinner_mean
 
 ---
 ## 6. 실행 방법  
-1. 필요한 라이브러리 설치  
-```bash
-pip install -r requirements.txt
-````
-
-2. 데이터 준비: `data/` 폴더에 원본 데이터 저장
-3. 모델 훈련 및 예측 실행
+1. 필요한 데이터 준비: `data/` 폴더에 merged_data.csv 데이터 저장
+2. 모델 훈련 및 예측 실행
 
 ```bash
 python prediction/train.py  
