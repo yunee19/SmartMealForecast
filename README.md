@@ -482,7 +482,9 @@ python prediction/prediction.py
 ```
 ## 7. 실행결과 분석
 ---
-- 예측 결과: 
+- 예측 결과:
+![image](https://github.com/user-attachments/assets/0b3fa7df-29fd-470a-9a40-a95196fa3e57)
+
 ![image](https://github.com/user-attachments/assets/fb8d1c12-a921-4036-9d2d-8ba202f6c9b8)
 * 예측 결과는 전반적으로 초기 기대에 부합하였습니다.
  ![scatter_dinner_xgb](https://github.com/user-attachments/assets/20f3bfd1-267d-4653-9cff-d17a4fed1509)
