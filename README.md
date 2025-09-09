@@ -21,42 +21,30 @@ XGBoost와 Random Forest와 같은 머신러닝 알고리즘을 활용하여 비
 
 SmartMealForecast/
 ├── data/                        ← 원본 데이터 및 전처리 데이터
-│   ├── merged\_data.csv          ← 전처리 완료 데이터 (컬럼명 변경, 특수일 데이터 처리 등)
-│   ├── one\_hot\_encoded.csv      ← 원-핫 인코딩 데이터
-│   ├── word\_encoded.csv         ← 단어 빈도 인코딩 데이터
-│   ├── predictions\_train\_result.csv ← 훈련 결과 데이터
-│   ├── evaluation\_results.txt   ← XGBoost, Random Forest, Baseline의 MSE 및 MAE 결과
-│   ├── x\_encoded.csv            ← 특성 공학 데이터
-│   ├── y\_lunch.csv              ← 점심 고객 수 데이터
-│   ├── y\_dinner.csv             ← 저녁 고객 수 데이터
-│   ├── original\_data.csv        ← 원본 데이터
-│   ├── original\_meal\_data\_2016\_2021.csv ← 2016\~2021 식사 데이터 원본
-│   ├── original\_special\_day\_data\_2016\_2021.csv ← 휴일 정보 원본
-│   └── original\_weather\_data\_2016\_2021.csv ← 날씨 데이터 원본
+│   ├── merged\_data\_2\_kcal.csv   ← 데이터  
+│   └── ... 등등
 
-├── prediction/                 ← 예측 수행 관련 스크립트
-│   ├── train.py                ← 인코딩, 모델 훈련 및 결과 통합
-│   ├── prediction.py           ← 전체 데이터에 대한 예측 실행
-│   └── my\_model.py             ← 모델 정의 코드
+
+├── predictions/                 ← 예측 수행 관련 스크립트
+│   ├── train\_2.py                ← 모델 훈련
+│   ├── prediction\_2.py           ← 전체 데이터에 대한 예측 실행
+│   └── predict\_by\_date.py             ← 지정 날짜에 예측
+│   └── ... 등등
 
 ├── models/                     ← 학습된 모델 저장
-│   ├── ranfor\_dinner\_model.pkl
-│   ├── ranfor\_lunch\_model.pkl
-│   ├── xgboost\_dinner\_model.pkl
-│   └── xgboost\_model.pkl
+│   ├── xgboost\_dinner\_model\_2.pkl
+│   └── xgboost\_lunch\_model\_2.pkl
+|   └──... 등등
 
 ├── evaluation/                 ← 평가 결과 및 시각화 자료
-│   ├── evaluation.py           ← MAE, Normalized MAE 계산 및 그래프 생성 스크립트
-│   ├── graph.py                ← 다양한 시각화 그래프 생성 스크립트
-│   ├── mae\_comparison\_improved\_chart.png ← MAE 비교 그래프
-│   ├── mae\_result.csv          ← 평가 결과 CSV 파일
-│   ├── 2020\_boxplot\_holiday\_total\_customers.png
-│   ├── 2020\_boxplot\_specialday\_total\_customers\_improved.png
-│   ├── 2020\_scatter\_avgtemp\_by\_month.png
-│   ├── ... 등등
+│   ├── evaluation\_2.py           ← MAE, Normalized MAE 계산 및 그래프 생성 스크립트
+│   ├── graph\_2.py                ← 다양한 시각화 그래프 생성 스크립트
+│   └──... 등등
 
 ├── prediction\_result/          ← 예측 결과 저장
-│   └── predictions\_all\_data.csv
+│   └── predictions\_all\_data\_2.csv
+│   └── train\_2\_predictions.csv
+│   └──... 등등
 
 └── README.md                   ← 프로젝트 설명서 (현재 파일)
 
