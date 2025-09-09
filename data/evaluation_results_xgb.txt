@@ -1,0 +1,9 @@
+ XGBoost Lunch
+  MSE: 15577.86, MAE: 94.04
+ XGBoost Dinner
+  MSE: 9646.75, MAE: 66.94
+
+ Baseline Lunch
+  MSE: 42360.86, MAE: 163.36
+ Baseline Dinner
+  MSE: 19838.94, MAE: 97.74
