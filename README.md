@@ -2,21 +2,35 @@
 # SmartMealForecast 프로젝트 
 
 ## 1. 프로젝트 소개  
-작품명: SmartMealForecast (식수 예측)  
-최종 목표 : SmartMealForecast 프로젝트의 목표는 다음과 같은 요소들을 기반으로 하루 동안 준비해야 할 고객 수 또는 음식 수를 예측하는 시스템을 구축하는 것입니다:
-- 과거 고객 및 식수량 데이터: 반복되는 패턴을 학습하여 예측 정확도를 높임  
-- 날씨 데이터: 외출 여부와 식사 선택에 큰 영향  
-- 공휴일 및 특별 이벤트: 고객 수요의 증가 요인이 될 수 있음  
+**작품명**: SmartMealForecast (식수 예측)  
 
-**예측의 중요성**  
-정확한 예측은 음식 낭비를 줄이고, 부족하거나 과잉되는 상황을 방지하며, 고객 만족도를 향상시킵니다.  
+**최종 목표** : 
+본 프로젝트의 목표는 과거 고객/식수 데이터, 날씨, 특별일 정보, 사내 인원 정보 등을 기반으로 하루 동안 준비해야 할 점심·저녁 식수량을 예측하는 것입니다. 이를 통해 음식 낭비를 줄이고 부족·과잉 공급을 방지하여 운영 효율성을 높이고 고객 만족도를 향상시키고자 합니다.
+
+**예측의 중요성**:
+
+- 정확한 수요 예측 → 음식 폐기물 감소
+
+- 인력·재료 비용 최적화
+
+- 고객 만족도 향상
 
 **사용 알고리즘**  
-XGBoost와 Random Forest와 같은 머신러닝 알고리즘을 활용하여 비선형적이고 복잡한 데이터를 효과적으로 처리합니다.  
-
+- XGBoost, Random Forest 등 비선형적·복잡한 패턴을 잘 처리할 수 있는 머신러닝 알고리즘 사용
+- 메뉴 정보 인코딩(원-핫, 빈도 기반) 및 직원 수 예측 등 특화된 Feature Engineering 적용
+  
 ---
 
-## 2. 프로젝트 구조  
+## 2. 데이터 및 구조  
+---
+### (1) 데이터 출처
+### - 데이터 탐색
+* 총 1205행 데이터, 출처는 Dacon (데이터 고객/주문 : [Dacon 링크](https://dacon.io/competitions/official/235743/overview/description?utm_source=chatgpt.com))
+* 날씨 데이터 출처 : [기상청 데이터](https://data.kma.go.kr/climate/RankState/selectRankStatisticsDivisionList.do?pgmNo=179)
+* 휴일 및 특별일 데이터는 달력에서 수집
+  
+---
+### (2) 프로젝트 폴더 구조
 ```
 
 SmartMealForecast/
@@ -51,62 +65,55 @@ SmartMealForecast/
 ````
 
 
-## 3. 주요 기능 및 역할  
-- 데이터 전처리 및 인코딩 (One-hot, 단어 빈도 등)  
-- 점심 및 저녁 고객 수 예측 모델 훈련 및 예측  
-- 다양한 머신러닝 알고리즘 적용 (XGBoost, Random Forest 등)  
-- 예측 결과 평가 (MAE, Normalized MAE, MSE)  
-- 결과 시각화 (박스플롯, 산점도, 바플롯 등)  
+## 3. 데이터 탐색
+---
+### (1) 데이터 기본 현황
+
+총 1,205행
+
+점심·저녁 메뉴,칼로리 정보, 고객 수, 직원 수, 날씨(평균/최대/최소 기온), 계절,특별일 포함
+
+### (2) 주요 인사이트
+
+특별일/공휴일에 고객 수 급증 → 바 플롯 확인
+
+월요일 특정 날짜(예: 2018-07-23, 2018-08-06)에도 고객 수 증가 패턴
+
+15~20℃의 쾌적한 날씨에 점심 고객 수가 증가
+
+시각화(박스플롯, 선 그래프, 산점도)를 통해 날씨·요일·특별일과 고객 수 관계 확인
+---
+
+## 4. 전처리 및 특징 엔지니어링
+---
+1. **결측치 처리 (Missing Values)**  
+   - 일부 날짜·메뉴 데이터에 결측치가 존재하여 평균값 또는 최빈값으로 대체하거나, 예측에 필요 없는 경우 해당 행(row)을 제거하였다.  
+   - 예: 특정 날 메뉴 칼로리 값이 비어 있는 경우 동일 메뉴의 평균 칼로리를 사용.
+
+2. **이상치 처리 (Outlier Handling)**  
+   - 극단적으로 높거나 낮은 고객 수·메뉴 주문 수는 모델을 왜곡할 수 있으므로 IQR(사분위 범위) 및 Z-score를 활용해 이상치를 탐지·조정하였다.
+
+3. **범주형 변수 인코딩 (Categorical Encoding)**  
+   - 메뉴명, 요일, 날씨 등 범주형(categorical) 데이터를 원-핫 인코딩(One-Hot Encoding) 또는 레이블 인코딩(Label Encoding)하여 모델이 이해할 수 있도록 수치형 데이터로 변환하였다.
+
+4. **스케일링 (Scaling)**  
+   - 변수 간 스케일 차이를 줄이기 위해 표준화(Standardization) 또는 정규화(Normalization)를 적용해 모델 학습의 안정성을 확보하였다.
+
+5. **파생 변수 생성 (Feature Creation)**  
+   - 고객 수·메뉴 패턴을 더 잘 설명하기 위해 기존 변수에서 새로운 특징을 생성하였다.
+     - 요일별 평균 고객 수, 계절(봄/여름/가을/겨울) 변수 추가  
+     - 공휴일 여부(holiday flag) 변수 추가  
+     - 날씨(강수량·기온)를 결합한 ‘체감 기온’ 변수 생성
+
+6. **시간 시퀀스 특성 반영 (Time-series Features)**  
+   - 이전 일·주·월의 고객 수 이동평균(lag features, rolling mean)과 증감률을 계산하여 수요 예측의 패턴성을 높였다.
 
 ---
 
-## 4. 데이터 탐색 및 전처리
----
-### - 데이터 탐색
-* 총 1205행 데이터, 출처는 Dacon (데이터 고객/주문 : [Dacon 링크](https://dacon.io/competitions/official/235743/overview/description?utm_source=chatgpt.com))
-* 날씨 데이터 출처 : [기상청 데이터](https://data.kma.go.kr/climate/RankState/selectRankStatisticsDivisionList.do?pgmNo=179)
-* 휴일 및 특별일 데이터는 달력에서 수집
-    ![image](https://github.com/user-attachments/assets/2163fde4-b0c9-45af-9b9d-cfce84f9cb9b)
-
-* 엑셀을 이용해 분석하기 쉽게 데이터를 분리하고 필요한 원본 데이터를 병합하여 `merged_data.csv` 파일 생성
-( Lunch_Menu, Dinner_Menu를 모델의 정확률 높이기 위해 'Lunch_Rice', 'Lunch_Soup', 'Lunch_Main_Dish', 'Lunch_Side_Dish_1',
-    'Lunch_Side_Dish_2', 'Lunch_Drink', 'Lunch_Kimchi', 'Lunch_side_Dish_3',
-    'Dinner_Rice', 'Dinner_Soup', 'Dinner_Main_Dish', 'Dinner_Side_Dish_1',
-    'Dinner_Side_Dish_2', 'Dinner_Side_Dish_3', 'Dinner_Drink', 'Dinner_Kimchi'로 분리 )
-  ![image](https://github.com/user-attachments/assets/7fb4064c-2c33-45d9-9e95-7351c3bd7053)
-
-
-* 그래프(barplot_special_day_lunch_count_customers.png)를 보면 특별한 날에 고객 수가 확실히 많아지고, 월요일날들(2018-07-23, 2018-08-06 등)에도 고객 수가 늘어나는 것을 알 수 있다
- ![image](https://github.com/user-attachments/assets/e42c7a03-5800-410d-9830-d763d9db1c21)
-
-* 날씨가 좋은 날에는 (15-20도) 점심 고객 수가 증가하는 경향이 있는 것으로 나타났다
- ![lineplot_2019_temp_vs_lunch](https://github.com/user-attachments/assets/34c76e26-0335-4ce3-b8c7-4ba1e49ab558)
-
-### - 전처리
-
-```python
-# Data preprocessing / Tiền xử lý dữ liệu
-if 'Date' in df.columns:
-    df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
-    df['day_of_week'] = df['Date'].dt.dayofweek
-    df['month'] = df['Date'].dt.month
-    df.dropna(subset=['Date'], inplace=True)
-
-[6]
-# 4️ Check and handle missing values / Kiểm tra và xử lý giá trị thiếu
-print("\nMissing Values Count:")
-print(df.isnull().sum())
-
-# Fill missing values with column mean / Điền giá trị thiếu bằng giá trị trung bình
-for col in df.select_dtypes(include=[np.number]).columns:
-    df[col].fillna(df[col].mean(), inplace=True)
-```
-
----
 ## 5. 코드
+---
 
-
-### 1) train.py 파일 코드 설명
+### train_2.py 파일 코드 설명
 ---
 * 주요 라이브러리 임포트
 * `pandas`, `numpy` : 데이터 처리 및 수치 계산
@@ -115,22 +122,13 @@ for col in df.select_dtypes(include=[np.number]).columns:
 * `Counter` : 메뉴 빈도 계산
 * `sklearn` 관련 : 데이터 분할, 평가 지표, 랜덤포레스트 모델
 * `xgboost` : XGBoost 모델
+* `gensim.models` : Word2Vec
 
 ---
 
+### 학습과정 :
 
-## 데이터 불러오기
-
-```python
-df = pd.read_csv(os.path.join(DATA_DIR, "merged_data.csv"))
-```
-
-* 합쳐진 데이터셋 csv 파일을 읽어와 `df`에 저장
-
----
-
-## 메뉴 컬럼 리스트 정의
-
+**(1) 메뉴 컬럼 리스트 정의**
 ```python
 menu_columns = [
     'Lunch_Rice', 'Lunch_Soup', 'Lunch_Main_Dish', 'Lunch_Side_Dish_1',
@@ -139,234 +137,130 @@ menu_columns = [
     'Dinner_Side_Dish_2', 'Dinner_Side_Dish_3', 'Dinner_Drink', 'Dinner_Kimchi'
 ]
 ```
+**(2) 데이터 로드 및 메뉴 컬럼 정의**
+- 메뉴 관련 컬럼들을 추후 Word2Vec 입력 및 임베딩 대상(각 날짜의 메뉴 목록)으로 사용.
+  
+**(3) 기본 특성 선택(Feature cols) 및 Season 인코딩**
+- 모델 입력으로 사용할 기본 특성을 선택
+- Season을 범주형 코드로 변환하여 수치형 모델에서 사용 가능하도록 함
 
-* 점심과 저녁 메뉴 항목들 컬럼명 리스트
+**(4) Pre_Special_Day (특별일 전/후 변수)**
+- 특별일 전(전날) 효과를 반영
 
----
+**(5) Actual_Emp(실제 근무자) 예측 모델 (내부 피처로 사용)**
+  - Actual_Emp(실제 출근자 수)가 누락되거나 실시간 수집이 불가능한 경우를 대비해, 다른 특성으로 Actual_Emp를 예측하고 이를 후속 feature로 사용함
 
-## One-hot encoding 처리
+**(6) Emp_Ratio 생성 (예측된 실제 인원 / 총 인원)**
+- 근무율(예: 실제 출근자 비율)을 특성으로 포함하여 고객 수와의 상관관계를 반영
 
-```python
-all_menus = pd.concat([df[col] for col in menu_columns])
-unique_menus = all_menus.dropna().unique()
-menu_ohe = pd.DataFrame(0, index=df.index, columns=unique_menus)
+**(7) 시간(주기성) 인코딩: Sin/Cos**
+- Month, Day의 순환적(주기적) 속성 반영 — 머신러닝 모델이 계절성/주기성을 더 잘 잡게 함.
 
-for col in menu_columns:
-    for idx, val in df[col].items():
-        if pd.notna(val):
-            menu_ohe.at[idx, val] = 1
-```
+**(8) 요일(WeekDay) sin/cos 인코딩**
+- 요일(월~금)에 대한 주기성 반영
 
-* 메뉴의 모든 값들을 합쳐서 유니크 메뉴 아이템 추출
-* 각 메뉴별로 one-hot 인코딩된 DataFrame 생성
-* 메뉴가 있으면 해당 칼럼을 1로 표시
-
-```python
-merged_with_ohe = pd.concat([df, menu_ohe], axis=1)
-merged_with_ohe.to_csv(os.path.join(DATA_DIR, "one_hot_encoded.csv"), index=False)
-```
-
-* 원본 데이터와 one-hot 인코딩된 메뉴 데이터를 합치고 저장
-
----
-
-## 단어 빈도 인코딩 처리 (Word Frequency Encoding)
+**(9) 메뉴 Word2Vec 임베딩**
 
 ```python
-menu_counter = Counter()
-for col in menu_columns:
-    menu_counter.update(df[col].dropna())
+menu_sentences = []
+for idx, row in df.iterrows():
+    sentence = [str(row[col]) for col in menu_columns if pd.notna(row[col])]
+    if sentence:
+        menu_sentences.append(sentence)
 
-menu_word_encoded = pd.DataFrame(0, index=df.index, columns=unique_menus)
-for col in menu_columns:
-    for idx, val in df[col].items():
-        if pd.notna(val):
-            menu_word_encoded.at[idx, val] = menu_counter[val]
+w2v_model = Word2Vec(sentences=menu_sentences, vector_size=100, window=5, min_count=1, workers=4, seed=42)
+w2v_model.save(os.path.join(MODEL_DIR, "w2v_menu.model"))
+
 ```
-
-* 메뉴 아이템별 등장 빈도를 계산해 저장
-* 각 데이터 행별 메뉴 아이템 등장 횟수를 값으로 할당
-
-```python
-merged_with_word_encoding = pd.concat([df, menu_word_encoded], axis=1)
-merged_with_word_encoding.to_csv(os.path.join(DATA_DIR, "word_encoded.csv"), index=False)
-```
-
-* 원본 데이터와 단어 빈도 인코딩 데이터를 합쳐 저장
-
----
-
-## Feature Engineering (특징 변수 가공)
-
-```python
-feature_cols = ['Holiday', 'special_day', 'Avg_Temp', 'Max_Temp', 'Min_Temp',
-                'Temp_Range', 'Season', 'Month', 'Day']
-
-X = df[feature_cols].copy()
-X['Season'] = X['Season'].astype('category').cat.codes
-X['Day'] = X['Day'].astype('category').cat.codes
-X = pd.concat([X, menu_ohe], axis=1)
-X.columns = X.columns.str.replace(r'[\[\]<>]', '_', regex=True)
-```
-
-* 모델 입력 특징 변수 선택 및 복사
-* `Season`, `Day` 범주형 변수 숫자 인코딩
-* one-hot 메뉴 변수 합치기
-* 컬럼명 중 특수문자 대체 (호환성 위해)
-
----
-
-## 타깃 변수 설정
+- 메뉴 텍스트(예: 반찬 이름 등)를 분산 임베딩(Word2Vec)으로 표현하여 의미적 유사도를 특성으로 반영.
+- vector_size=100 은 각 메뉴를 100차원 벡터로 표현.
+- min_count=1로 설정되어 있어 등장 한 번만 해도 임베딩에 포함됨(희소한 메뉴까지 반영됨).
+**(10) 특성 결합 및 컬럼명 정리**
+  - 기본 특성 + 메뉴 임베딩을 합쳐 최종 입력 매트릭스 X를 구성
+ 
+**(11) 타깃 지정 및 학습/테스트 분할**
 
 ```python
 y_lunch = df['Lunch_Count']
 y_dinner = df['Dinner_Count']
-```
 
-* 점심, 저녁 각각의 식사 인원 수를 예측 목표로 설정
-
----
-
-## 학습/테스트 데이터 분리
-
-```python
 X_train, X_test, y_lunch_train, y_lunch_test = train_test_split(X, y_lunch, test_size=0.2, random_state=42)
 _, _, y_dinner_train, y_dinner_test = train_test_split(X, y_dinner, test_size=0.2, random_state=42)
 ```
-
-* 데이터 80%는 학습용, 20%는 테스트용으로 분리
-
----
-
-## 모델 학습
+**(12) XGBoost 학습 함수 및 모델 학습**
 
 ```python
-model_lunch_xgb = xgb.XGBRegressor(objective='reg:squarederror', random_state=42)
-model_dinner_xgb = xgb.XGBRegressor(objective='reg:squarederror', random_state=42)
-model_lunch_rf = RandomForestRegressor(random_state=42)
-model_dinner_rf = RandomForestRegressor(random_state=42)
+def train_xgb(X_tr, y_tr, X_val, y_val):
+    dtrain = xgb.DMatrix(X_tr, label=y_tr)
+    dval = xgb.DMatrix(X_val, label=y_val)
 
-model_lunch_xgb.fit(X_train, y_lunch_train)
-model_dinner_xgb.fit(X_train, y_dinner_train)
-model_lunch_rf.fit(X_train, y_lunch_train)
-model_dinner_rf.fit(X_train, y_dinner_train)
+    params = {'objective': 'reg:squarederror', 'eval_metric': 'rmse',
+              'seed': 42, 'max_depth': 8, 'eta': 0.1}
+
+    evals = [(dtrain, 'train'), (dval, 'eval')]
+    model = xgb.train(params, dtrain, num_boost_round=500,
+                      evals=evals, early_stopping_rounds=50, verbose_eval=50)
+    return model
+
+model_lunch_xgb = train_xgb(X_train, y_lunch_train, X_test, y_lunch_test)
+model_dinner_xgb = train_xgb(X_train, y_dinner_train, X_test, y_dinner_test)
+
 ```
+- X_tr, y_tr : 학습(Train)용 입력 데이터와 정답(라벨), X_val, y_val : 검증(Validation)용 입력 데이터와 정답(라벨)( 학습 데이터와 검증 데이터를 받아서 XGBoost 회귀 모델을 만들어 반환합니다)
+- DMatrix로 변환 :
+      - XGBoost는 자체 데이터 구조인 DMatrix를 사용합니다.
+      - DMatrix는 메모리와 계산 속도를 최적화한 자료구조로, 모델 학습·예측 때 더 빠르게 동작하게 해줍니다.
+      - label=y_tr로 실제 정답 값을 함께 지정합니다.
+- 하이퍼파라미터 설정 :
+      - objective : 학습 목적 함수. 'reg:squarederror'는 회귀(연속값 예측)용 제곱오차를 의미합니다.
+      - eval_metric : 평가 지표. rmse는 root mean squared error(평균제곱근오차)입니다.
+      - seed : 랜덤 시드 고정. 재현성(같은 결과)을 위해 사용합니다.
+      - max_depth : 트리 최대 깊이. 클수록 더 복잡한 모델이 됩니다(과적합 주의).
+      - eta : 학습률(learning rate). 한 번의 학습 스텝에서 파라미터가 얼마나 업데이트될지 결정.
+- 학습과 검증 데이터 지정:
+    - 학습 과정에서 학습(train) 데이터와 검증(eval) 데이터의 오차를 함께 확인하기 위해 튜플로 지정.
+    - xgb.train()이 진행될 때 각 단계마다 두 데이터셋의 RMSE를 출력합니다.
+ 
+- 모델 학습:
+    - params : 앞에서 지정한 하이퍼파라미터.
+    - num_boost_round=500 : 최대 500회(부스팅 라운드)까지 반복 학습.
+    - evals=evals : 매 라운드마다 학습·검증 오차 출력.
+    - early_stopping_rounds=50 : 검증 오차가 50번 연속 개선되지 않으면 학습 조기 종료(과적합 방지).
+    - verbose_eval=50 : 50라운드마다 학습 상황을 출력.
+    - 이렇게 하면 XGBoost 모델이 학습되고, 조기 종료가 적용되어 불필요한 반복을 줄일 수 있다.
+ 
+- 실제 사용:
+    - model_lunch_xgb : 점심 고객 수(Lunch_Count) 예측 모델
+    - model_dinner_xgb : 저녁 고객 수(Dinner_Count) 예측 모델
 
-* XGBoost와 랜덤포레스트 2종 모델 각각 점심과 저녁 예측용으로 학습
-
----
-
-## 예측
+**(13) 예측 및 평가**
 
 ```python
-y_lunch_pred_xgb = model_lunch_xgb.predict(X_test)
-y_dinner_pred_xgb = model_dinner_xgb.predict(X_test)
-y_lunch_pred_rf = model_lunch_rf.predict(X_test)
-y_dinner_pred_rf = model_dinner_rf.predict(X_test)
-```
+y_lunch_pred = model_lunch_xgb.predict(xgb.DMatrix(X_test))
+y_dinner_pred = model_dinner_xgb.predict(xgb.DMatrix(X_test))
 
-* 테스트 데이터에 대해 예측 수행
-
----
-
-## 평가 함수 및 결과 계산
-
-```python
 def evaluate(true, pred):
     return mean_squared_error(true, pred), mean_absolute_error(true, pred)
 
-mse_lunch_xgb, mae_lunch_xgb = evaluate(y_lunch_test, y_lunch_pred_xgb)
-mse_dinner_xgb, mae_dinner_xgb = evaluate(y_dinner_test, y_dinner_pred_xgb)
-mse_lunch_rf, mae_lunch_rf = evaluate(y_lunch_test, y_lunch_pred_rf)
-mse_dinner_rf, mae_dinner_rf = evaluate(y_dinner_test, y_dinner_pred_rf)
+mse_lunch, mae_lunch = evaluate(y_lunch_test, y_lunch_pred)
+mse_dinner, mae_dinner = evaluate(y_dinner_test, y_dinner_pred)
+
 ```
+- 테스트셋에서 예측 후 MSE, MAE 계산
 
-* MSE, MAE 두 가지 지표로 모델 성능 평가
+**(14) Baseline(평균 예측) 생성**
 
+**(15) 평가/예측/모델 저장**
 ```python
-baseline_lunch = np.full_like(y_lunch_test, y_lunch_train.mean())
-baseline_dinner = np.full_like(y_dinner_test, y_dinner_train.mean())
-mse_lunch_base, mae_lunch_base = evaluate(y_lunch_test, baseline_lunch)
-mse_dinner_base, mae_dinner_base = evaluate(y_dinner_test, baseline_dinner)
+eval_df.to_csv(os.path.join(EVALUATION_DIR, "train_2_evaluation.csv"), index=False)
+pred_df.to_csv(os.path.join(PRED_DIR, "train_2_predictions.csv"), index=False)
+
+joblib.dump(model_lunch_xgb, os.path.join(MODEL_DIR, "xgboost_lunch_model_2.pkl"))
+joblib.dump(model_dinner_xgb, os.path.join(MODEL_DIR, "xgboost_dinner_model_2.pkl"))
 ```
+- XGBoost 모델 저장
 
-* 평균값을 예측하는 기본선(baseline) 모델과 비교
-
----
-
-## 평가 결과 저장
-
-```python
-with open(os.path.join(DATA_DIR, "evaluation_results.txt"), "w", encoding="utf-8") as f:
-    f.write(" XGBoost Lunch\n")
-    f.write(f"  MSE: {mse_lunch_xgb:.2f}, MAE: {mae_lunch_xgb:.2f}\n")
-    f.write(" XGBoost Dinner\n")
-    f.write(f"  MSE: {mse_dinner_xgb:.2f}, MAE: {mae_dinner_xgb:.2f}\n\n")
-    f.write(" Random Forest Lunch\n")
-    f.write(f"  MSE: {mse_lunch_rf:.2f}, MAE: {mae_lunch_rf:.2f}\n")
-    f.write(" Random Forest Dinner\n")
-    f.write(f"  MSE: {mse_dinner_rf:.2f}, MAE: {mae_dinner_rf:.2f}\n\n")
-    f.write(" Baseline Lunch\n")
-    f.write(f"  MSE: {mse_lunch_base:.2f}, MAE: {mae_lunch_base:.2f}\n")
-    f.write(" Baseline Dinner\n")
-    f.write(f"  MSE: {mse_dinner_base:.2f}, MAE: {mae_dinner_base:.2f}\n")
-```
-
-* 텍스트 파일로 평가 결과 기록
-
----
-
-## 예측 결과를 원본 데이터프레임에 추가하고 저장
-
-```python
-df_preds = df.copy()
-df_preds['lunch_pred_xgb'] = np.nan
-df_preds['dinner_pred_xgb'] = np.nan
-df_preds['lunch_pred_rf'] = np.nan
-df_preds['dinner_pred_rf'] = np.nan
-df_preds['baseline_lunch_pred'] = np.nan
-df_preds['baseline_dinner_pred'] = np.nan
-
-df_preds.loc[X_test.index, 'lunch_pred_xgb'] = y_lunch_pred_xgb
-df_preds.loc[X_test.index, 'dinner_pred_xgb'] = y_dinner_pred_xgb
-df_preds.loc[X_test.index, 'lunch_pred_rf'] = y_lunch_pred_rf
-df_preds.loc[X_test.index, 'dinner_pred_rf'] = y_dinner_pred_rf
-df_preds.loc[X_test.index, 'baseline_lunch_pred'] = baseline_lunch
-df_preds.loc[X_test.index, 'baseline_dinner_pred'] = baseline_dinner
-
-df_preds.to_csv(os.path.join(DATA_DIR, "predictions_train_result.csv"), index=False)
-```
-
-* 예측값을 NaN으로 초기화 후 테스트 인덱스 위치에 예측 결과를 넣음
-* 저장하여 결과 비교 가능
-
----
-
-## 가공된 데이터 및 타깃 변수 저장
-
-```python
-X.to_csv(os.path.join(DATA_DIR, "x_encoded.csv"), index=False)
-pd.DataFrame(y_lunch).to_csv(os.path.join(DATA_DIR, "y_lunch.csv"), index=False)
-pd.DataFrame(y_dinner).to_csv(os.path.join(DATA_DIR, "y_dinner.csv"), index=False)
-```
-
-* 입력 특징과 타깃 데이터를 각각 CSV 파일로 저장
-
----
-
-## 학습한 모델 저장
-
-```python
-joblib.dump(model_lunch_xgb, os.path.join(MODEL_DIR, "xgboost_lunch_model.pkl"))
-joblib.dump(model_dinner_xgb, os.path.join(MODEL_DIR, "xgboost_dinner_model.pkl"))
-joblib.dump(model_lunch_rf, os.path.join(MODEL_DIR, "ranfor_lunch_model.pkl"))
-joblib.dump(model_dinner_rf, os.path.join(MODEL_DIR, "ranfor_dinner_model.pkl"))
-```
-
-* 학습 완료한 XGBoost, Random Forest 모델을 각각 저장
-
----
-## 2) prediction.py 파일 코드 설명
+### prediction_2.py 파일 코드 설명
 ---
 ## 라이브러리	
 
