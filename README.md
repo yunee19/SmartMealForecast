@@ -9,7 +9,7 @@
 
 **예측의 중요성**:
 
-- 정확한 수요 예측 → 음식 폐기물 감소
+- 정확한 수요 예측 → 음식 낭비 감소
 
 - 인력·재료 비용 최적화
 
@@ -75,13 +75,21 @@ SmartMealForecast/
 
 ### (2) 주요 인사이트
 
-특별일/공휴일에 고객 수 급증 → 바 플롯 확인
+특별일에 고객 수 급증 → 바 플롯 확인
+
+<img width="1600" height="600" alt="barplot_special_day_lunch_count_customers" src="https://github.com/user-attachments/assets/3c267b3b-e875-48a8-9f77-b618cbaec283" />
+
 
 월요일 특정 날짜(예: 2018-07-23, 2018-08-06)에도 고객 수 증가 패턴
 
-15~20℃의 쾌적한 날씨에 점심 고객 수가 증가
+**15~20℃의 쾌적한 날씨에 점심 고객 수가 증가**
 
-시각화(박스플롯, 선 그래프, 산점도)를 통해 날씨·요일·특별일과 고객 수 관계 확인
+<img width="1000" height="600" alt="image" src="https://github.com/user-attachments/assets/b4caa481-23b6-4041-adc6-3e26d1195576" />
+
+계절
+
+<img width="800" height="600" alt="barplot_season_total_customers" src="https://github.com/user-attachments/assets/f8c41a3e-897b-46eb-ac91-1c6b85d3ee80" />
+
 
 ---
 
@@ -261,143 +269,93 @@ joblib.dump(model_dinner_xgb, os.path.join(MODEL_DIR, "xgboost_dinner_model_2.pk
 ```
 - XGBoost 모델 저장
 
-### prediction_2.py 파일 코드 설명
+### prediction_2.py 파일 코드 설명( 모든 데이터 가지고 실행)
 ---
-## 라이브러리	
+**라이브러리**	
 
-* pandas, numpy, joblib, os, collections 모듈 임포트
-* pandas: 데이터 처리
-* numpy: 수치 계산
-* joblib: 저장된 모델 로딩
+* pandas, numpy: 표(데이터프레임)와 수치 연산
+* joblib: 학습된 모델 불러오기/저장
 * os: 파일 경로 처리
-* Counter: 데이터 빈도 계산용
+* xgboost: 예측 모델
+* Word2Vec: 메뉴 이름을 벡터로 변환(임베딩)
 
-
-## 점심과 저녁 메뉴 관련 컬럼 리스트 정의
-
----
+**모델 로드 (점심/저녁)**
 ```python
-menu_columns = [
-    'Lunch_Rice', 'Lunch_Soup', 'Lunch_Main_Dish', 'Lunch_Side_Dish_1',
-    'Lunch_Side_Dish_2', 'Lunch_Drink', 'Lunch_Kimchi', 'Lunch_side_Dish_3',
-    'Dinner_Rice', 'Dinner_Soup', 'Dinner_Main_Dish', 'Dinner_Side_Dish_1',
-    'Dinner_Side_Dish_2', 'Dinner_Side_Dish_3', 'Dinner_Drink', 'Dinner_Kimchi'
-]
+model_lunch_xgb = joblib.load(os.path.join(MODEL_DIR, "xgboost_lunch_model_2.pkl"))
+model_dinner_xgb = joblib.load(os.path.join(MODEL_DIR, "xgboost_dinner_model_2.pkl"))
 ```
 
+**예측**
 ```python
-all_menus = pd.concat([df[col] for col in menu_columns])
-unique_menus = all_menus.dropna().unique()
-menu_ohe = pd.DataFrame(0, index=df.index, columns=unique_menus)
-
-for col in menu_columns:
-    for idx, val in df[col].items():
-        if pd.notna(val):
-            menu_ohe.at[idx, val] = 1
+df['Pred_Lunch_XGB'] = model_lunch_xgb.predict(xgb.DMatrix(X)).round().astype(int)
+df['Pred_Dinner_XGB'] = model_dinner_xgb.predict(xgb.DMatrix(X)).round().astype(int)
 ```
 
-* 메뉴 컬럼들의 값을 모두 합쳐 고유 메뉴 리스트 생성
-* 각 메뉴를 열로 하는 원-핫 인코딩 데이터프레임 생성
-* 각 행, 각 메뉴에 대해 해당 메뉴가 있으면 1로 표시
-
----
-
+**결과 저장**
 ```python
-feature_cols = ['Holiday', 'special_day', 'Avg_Temp', 'Max_Temp', 'Min_Temp',
-                'Temp_Range', 'Season', 'Month', 'Day']
-
-X_all = df[feature_cols].copy()
-X_all['Season'] = X_all['Season'].astype('category').cat.codes
-X_all['Day'] = X_all['Day'].astype('category').cat.codes
-X_all = pd.concat([X_all, menu_ohe], axis=1)
-X_all.columns = X_all.columns.str.replace(r'[\[\]<>]', '_', regex=True)
+save_path = os.path.join(RESULTS_DIR, "predictions_all_data_2.csv")
+df.to_csv(save_path, index=False)
 ```
+**실행결과 예:**
 
-* 모델 입력 특성 리스트 지정
-* 'Season', 'Day'를 범주형으로 변환 후 코드화
-* 원-핫 인코딩 메뉴 컬럼과 병합
-* 컬럼명 내 특수문자 대체
+| Date       | Lunch\_Count | Dinner\_Count | Pred\_Lunch\_XGB | Pred\_Dinner\_XGB | Baseline\_Lunch | Baseline\_Dinner |
+| ---------- | ------------ | ------------- | ---------------- | ----------------- | --------------- | ---------------- |
+| 2016-02-01 | 1039         | 331           | 1039             | 332               | 890             | 462              |
+| 2016-02-02 | 867          | 560           | 867              | 560               | 890             | 462              |
+| 2016-02-03 | 1017         | 573           | 1017             | 573               | 890             | 462              |
+| 2016-02-04 | 978          | 525           | 978              | 525               | 890             | 462              |
+| 2016-02-05 | 925          | 330           | 925              | 331               | 890             | 462              |
 
----
 
-## 저장된 모델 불러오기
-```python
-model_lunch_xgb = joblib.load(os.path.join(ROOT_DIR, "models", "xgboost_lunch_model.pkl"))
-model_dinner_xgb = joblib.load(os.path.join(ROOT_DIR, "models", "xgboost_dinner_model.pkl"))
-model_lunch_rf = joblib.load(os.path.join(ROOT_DIR, "models", "ranfor_lunch_model.pkl"))
-model_dinner_rf = joblib.load(os.path.join(ROOT_DIR, "models", "ranfor_dinner_model.pkl"))
-```
-
-* 저장된 머신러닝 모델 4개 로드 (XGBoost, 랜덤포레스트 각각 점심/저녁용)
-
----
-
-## 예측 실행
-```python
-df['Lunch_Pred_XGB'] = model_lunch_xgb.predict(X_all).round().astype(int)
-df['Dinner_Pred_XGB'] = model_dinner_xgb.predict(X_all).round().astype(int)
-df['Lunch_Pred_RF'] = model_lunch_rf.predict(X_all).round().astype(int)
-df['Dinner_Pred_RF'] = model_dinner_rf.predict(X_all).round().astype(int)
-```
-
-* 각 모델별 점심, 저녁 인원수 예측
-* 예측값 반올림 후 정수 변환
-
----
-
-```python
-lunch_mean = int(round(df['Lunch_Count'].mean()))
-dinner_mean = int(round(df['Dinner_Count'].mean()))
-df['Lunch_Pred_Baseline'] = lunch_mean
-df['Dinner_Pred_Baseline'] = dinner_mean
-```
-
-* 점심, 저녁 인원수 평균값 계산 후 베이스라인 예측값으로 설정
 
 ---
 ## 6. 실행 방법  
-1. 필요한 데이터 준비: `data/` 폴더에 merged_data.csv 데이터 저장
+1. 필요한 데이터 준비: `data/` 폴더에 merged_data_2_kcal.csv 데이터 저장
 2. 모델 훈련 및 예측 실행
+3. 사용자 지정 날짜로 실행할 경우 predict_by_date.py 사용
 
 ```bash
-python prediction/train.py  
-python prediction/prediction.py
+python prediction/train_2.py  
+python prediction/prediction_2.py
 ```
 ## 7. 실행결과 분석
 ---
-- 예측 결과:
-![image](https://github.com/user-attachments/assets/0b3fa7df-29fd-470a-9a40-a95196fa3e57)
 
-![image](https://github.com/user-attachments/assets/fb8d1c12-a921-4036-9d2d-8ba202f6c9b8)
-* 예측 결과는 전반적으로 초기 기대에 부합하였습니다.
- ![scatter_dinner_xgb](https://github.com/user-attachments/assets/20f3bfd1-267d-4653-9cff-d17a4fed1509)
-![scatter_lunch_xgb](https://github.com/user-attachments/assets/ea3761e9-5bb5-49b5-8205-be416db16fcc)
+**실행결과 예:**
+
+| Date       | Lunch\_Count | Dinner\_Count | Pred\_Lunch\_XGB | Pred\_Dinner\_XGB | Baseline\_Lunch | Baseline\_Dinner |
+| ---------- | ------------ | ------------- | ---------------- | ----------------- | --------------- | ---------------- |
+| 2016-02-01 | 1039         | 331           | 1039             | 332               | 890             | 462              |
+| 2016-02-02 | 867          | 560           | 867              | 560               | 890             | 462              |
+| 2016-02-03 | 1017         | 573           | 1017             | 573               | 890             | 462              |
+| 2016-02-04 | 978          | 525           | 978              | 525               | 890             | 462              |
+| 2016-02-05 | 925          | 330           | 925              | 331               | 890             | 462              |
+
+**predict_by_date.py 살행결과**
+
+
+<img width="1730" height="789" alt="image" src="https://github.com/user-attachments/assets/07c085e3-dd80-4769-acf0-678f86a3dea6" />
+
+**prediction_2.py 살행결과**
+
+<img width="600" height="600" alt="image" src="https://github.com/user-attachments/assets/e46587ef-ab63-4f3d-8c74-70fd63847009" />
+
+<img width="600" height="600" alt="image" src="https://github.com/user-attachments/assets/a2711054-e945-45fe-91ec-0d55ddae5624" />
+
+
 
 - 에러 지표:
-![mae_comparison_improved_chart](https://github.com/user-attachments/assets/37a851ea-7a81-4298-ae62-d568e774e94a)
-* XGBoost(XGB)와 Random Forest(RF) 모두 낮은 MAE 및 정규화 MAE 수치를 기록하며 양호한 예측 성능을 보였습니다.
-* 특히 XGBoost는 점심과 저녁 시간대 모두에서 가장 낮은 MAE 값을 기록하며 뛰어난 성능을 입증하였고, RF 모델 역시 성능이 우수하지만 XGB보다 소폭 낮은 결과를 보였습니다.
-### - 결론
-* XGB 모델이 점심/저녁 모두에서 가장 낮은 MAE → 가장 정확한 예측.
-* RF도 성능이 괜찮지만 XGB보다 약간 낮음.
+<img width="1600" height="700" alt="mae_comparison_fixed_chart" src="https://github.com/user-attachments/assets/caa9c940-dc32-4d9e-86b7-b7e1c59420e3" />
 
-* 이처럼 SmartMealForecast 프로젝트는 날씨, 휴일, 메뉴 종류 등의 다양한 현실적 요인을 바탕으로
-일일 식수량을 예측하는 시스템을 성공적으로 구축하였습니다.
+* XGBoost(XGB낮은 MAE 및 정규화 MAE 수치를 기록하며 양호한 예측 성능을 보였습니다.
+* 
+### 결론
+- 본 연구에서는 날씨·휴일·메뉴 등 다양한 현실적 요인을 바탕으로 일일 식수량을 예측하는 SmartMealForecast 시스템을 성공적으로 구축하였다.
 
-* XGBoost와 Random Forest와 같은 최신 머신러닝 모델을 활용하여 비선형적이며 다차원적인 데이터를 효과적으로 처리할 수 있었으며, One-hot Encoding, 빈도 기반 인코딩 등 다양한 특성 인코딩 기법을 적용하고 MAE, MSE 등 지표를 기반으로 평가를 수행한 결과, 현장에 적용 가능한 신뢰도 높은 결과를 도출할 수 있었습니다.
-### - 향후 개발 방향
-1. 모델 정교화 및 예측 정확도 향상
-특성 엔지니어링을 통해 예측 성능을 최적화합니다.
- → 예: 요일, 계절, 연휴 전후 일수, 음식 종류 등
-외부 데이터를 추가로 반영합니다.
-2. 실시간 또는 반실시간 데이터 수집 및 처리
-식사 신청 데이터를 수집할 수 있는 시스템을 구축합니다. (가능한 경우)
-관리자에 의해 입력되는 추가 정보를 수집할 수 있도록 합니다.
- → 예: 당일 행사 여부, 결석 학생 수 등
-주간 또는 월간 자동 데이터 업데이트 스크립트를 작성합니다.
-3. 사용자 인터페이스 / 대시보드 구축
-직관적인 대시보드를 구축합니다.
-사용자가 직접 데이터를 입력할 수 있도록 수동 입력 기능을 제공합니다.
+- 특히 XGBoost 모델이 점심·저녁 모두에서 가장 낮은 MAE를 기록하여 가장 정확한 예측 성능을 보였으며, Random Forest 또한 준수한 성능을 나타냈다.
+
+- XGBoost·Random Forest와 같은 최신 머신러닝 기법을 활용함으로써 비선형·다차원 데이터를 효과적으로 처리할 수 있었으며, One-hot·빈도 기반 인코딩 등 다양한 특성 인코딩 기법과 MAE·MSE 지표 평가를 통해 현장 적용이 가능한 신뢰도 높은 결과를 도출하였다.
+
 ---
 
 ## 8. Author: Nguyen Thi Dung ( 응웬티둥)
