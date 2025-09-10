@@ -28,6 +28,7 @@
 * 총 1205행 데이터, 출처는 Dacon (데이터 고객/주문 : [Dacon 링크](https://dacon.io/competitions/official/235743/overview/description?utm_source=chatgpt.com))
 * 날씨 데이터 출처 : [기상청 데이터](https://data.kma.go.kr/climate/RankState/selectRankStatisticsDivisionList.do?pgmNo=179)
 * 휴일 및 특별일 데이터는 달력에서 수집
+* 칼로리 정보 : ChatGPT로 수집집
   
 ---
 ### (2) 프로젝트 폴더 구조
@@ -69,24 +70,35 @@ SmartMealForecast/
 ---
 ### (1) 데이터 기본 현황
 
-총 1,205행
+**데이터셋 : merged_data_2_kcal.csv**
 
-점심·저녁 메뉴,칼로리 정보, 고객 수, 직원 수, 날씨(평균/최대/최소 기온), 계절,특별일 포함
+**총 1,205행 데이터**
+
+| 그룹                     | 예시 열                                                                                                   | 의미                              |
+| ------------------------ | -------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| **날짜 & 계절 정보**     | `Date`, `Week_Day`, `Year`, `Month`, `Day`, `Season`                                                      | 날짜, 요일, 계절                  |
+| **인사(인원) 정보**      | `Total_Emp`, `Actual_Emp`, `Leave_Emp`, `Trip_Emp`, `OT_Approved`, `Remote_Emp`                           | 총 인원, 휴가, 출장, OT, 재택 등  |
+| **점심 메뉴**            | `Lunch_Rice`, `Lunch_Soup`, `Lunch_Main_Dish`, `Lunch_Side_Dish_1`, `Lunch_Kimchi` … + kcal 해당           | 각 메뉴명 및 칼로리               |
+| **저녁 메뉴**            | `Dinner_Rice`, `Dinner_Soup`, `Dinner_Main_Dish`, `Dinner_Side_Dish_1`… + kcal 해당                      | 각 메뉴명 및 칼로리               |
+| **기타**                 | `Station` (위치: 서울), `Avg_Temp`, `Max_Temp`, `Min_Temp`, `Temp_Range`, `Special_Day`                  | 날씨 및 특수일 정보               |
 
 ### (2) 주요 인사이트
 
-특별일에 고객 수 급증 → 바 플롯 확인
+* **특별일에 고객 수 급증**
 
 <img width="1600" height="600" alt="barplot_special_day_lunch_count_customers" src="https://github.com/user-attachments/assets/3c267b3b-e875-48a8-9f77-b618cbaec283" />
 
 
-월요일 특정 날짜(예: 2018-07-23, 2018-08-06)에도 고객 수 증가 패턴
+* **요일 특정**
 
-**15~20℃의 쾌적한 날씨에 점심 고객 수가 증가**
+<img width="1000" height="600" alt="avg_customers_by_weekday" src="https://github.com/user-attachments/assets/457c37f7-5a0f-43dc-930e-937398b35a77" />
+
+
+* **쾌적한 날씨에 점심 고객 수가 증가**
 
 <img width="1000" height="600" alt="image" src="https://github.com/user-attachments/assets/b4caa481-23b6-4041-adc6-3e26d1195576" />
 
-계절
+* **계절 따라 고객증가**
 
 <img width="800" height="600" alt="barplot_season_total_customers" src="https://github.com/user-attachments/assets/f8c41a3e-897b-46eb-ac91-1c6b85d3ee80" />
 
@@ -135,8 +147,6 @@ SmartMealForecast/
 
 ---
 
-### 학습과정 :
-
 **(1) 메뉴 컬럼 리스트 정의**
 ```python
 menu_columns = [
@@ -184,6 +194,8 @@ w2v_model.save(os.path.join(MODEL_DIR, "w2v_menu.model"))
 - 메뉴 텍스트(예: 반찬 이름 등)를 분산 임베딩(Word2Vec)으로 표현하여 의미적 유사도를 특성으로 반영.
 - vector_size=100 은 각 메뉴를 100차원 벡터로 표현.
 - min_count=1로 설정되어 있어 등장 한 번만 해도 임베딩에 포함됨(희소한 메뉴까지 반영됨).
+
+  
 **(10) 특성 결합 및 컬럼명 정리**
   - 기본 특성 + 메뉴 임베딩을 합쳐 최종 입력 매트릭스 X를 구성
  
@@ -298,13 +310,14 @@ df.to_csv(save_path, index=False)
 ```
 **실행결과 예:**
 
-| Date       | Lunch\_Count | Dinner\_Count | Pred\_Lunch\_XGB | Pred\_Dinner\_XGB | Baseline\_Lunch | Baseline\_Dinner |
-| ---------- | ------------ | ------------- | ---------------- | ----------------- | --------------- | ---------------- |
-| 2016-02-01 | 1039         | 331           | 1039             | 332               | 890             | 462              |
-| 2016-02-02 | 867          | 560           | 867              | 560               | 890             | 462              |
-| 2016-02-03 | 1017         | 573           | 1017             | 573               | 890             | 462              |
-| 2016-02-04 | 978          | 525           | 978              | 525               | 890             | 462              |
-| 2016-02-05 | 925          | 330           | 925              | 331               | 890             | 462              |
+| Date       | Lunch_Count | Dinner_Count | Pred_Lunch_XGB | Pred_Dinner_XGB | Baseline_Lunch | Baseline_Dinner |
+|------------|------------|--------------|----------------|-----------------|----------------|-----------------|
+| 2021-01-13 | 913        | 360          | 913            | 360             | 890            | 462             |
+| 2021-01-14 | 1038       | 439          | 822            | 405             | 890            | 462             |
+| 2021-01-15 | 702        | 277          | 638            | 324             | 890            | 462             |
+| 2021-01-18 | 1277       | 460          | 1254           | 477             | 890            | 462             |
+| 2021-01-19 | 1038       | 414          | 1038           | 414             | 890            | 462             |
+
 
 
 
@@ -321,22 +334,24 @@ python prediction/prediction_2.py
 ## 7. 실행결과 분석
 ---
 
-**실행결과 예:**
+* **실행결과 예:**
 
-| Date       | Lunch\_Count | Dinner\_Count | Pred\_Lunch\_XGB | Pred\_Dinner\_XGB | Baseline\_Lunch | Baseline\_Dinner |
-| ---------- | ------------ | ------------- | ---------------- | ----------------- | --------------- | ---------------- |
-| 2016-02-01 | 1039         | 331           | 1039             | 332               | 890             | 462              |
-| 2016-02-02 | 867          | 560           | 867              | 560               | 890             | 462              |
-| 2016-02-03 | 1017         | 573           | 1017             | 573               | 890             | 462              |
-| 2016-02-04 | 978          | 525           | 978              | 525               | 890             | 462              |
-| 2016-02-05 | 925          | 330           | 925              | 331               | 890             | 462              |
+| Date       | Lunch_Count | Dinner_Count | Pred_Lunch_XGB | Pred_Dinner_XGB | Baseline_Lunch | Baseline_Dinner |
+|------------|------------|--------------|----------------|-----------------|----------------|-----------------|
+| 2021-01-13 | 913        | 360          | 913            | 360             | 890            | 462             |
+| 2021-01-14 | 1038       | 439          | 822            | 405             | 890            | 462             |
+| 2021-01-15 | 702        | 277          | 638            | 324             | 890            | 462             |
+| 2021-01-18 | 1277       | 460          | 1254           | 477             | 890            | 462             |
+| 2021-01-19 | 1038       | 414          | 1038           | 414             | 890            | 462             |
 
-**predict_by_date.py 살행결과**
+
+* **predict_by_date.py 살행결과**
 
 
 <img width="1730" height="789" alt="image" src="https://github.com/user-attachments/assets/07c085e3-dd80-4769-acf0-678f86a3dea6" />
 
-**prediction_2.py 살행결과**
+
+* **prediction_2.py 살행결과**
 
 <img width="600" height="600" alt="image" src="https://github.com/user-attachments/assets/e46587ef-ab63-4f3d-8c74-70fd63847009" />
 
@@ -344,17 +359,31 @@ python prediction/prediction_2.py
 
 
 
-- 에러 지표:
+* **에러 지표**:
 <img width="1600" height="700" alt="mae_comparison_fixed_chart" src="https://github.com/user-attachments/assets/caa9c940-dc32-4d9e-86b7-b7e1c59420e3" />
 
-* XGBoost(XGB낮은 MAE 및 정규화 MAE 수치를 기록하며 양호한 예측 성능을 보였습니다.
-* 
-### 결론
-- 본 연구에서는 날씨·휴일·메뉴 등 다양한 현실적 요인을 바탕으로 일일 식수량을 예측하는 SmartMealForecast 시스템을 성공적으로 구축하였다.
+* XGBoost(XGB낮은 MAE 및 정규화 MAE 수치를 기록하며 뛰어난 예측 성능을 보였습니다.
+  
+## 결론
 
-- 특히 XGBoost 모델이 점심·저녁 모두에서 가장 낮은 MAE를 기록하여 가장 정확한 예측 성능을 보였으며, Random Forest 또한 준수한 성능을 나타냈다.
+**SmartMealForecast** 프로젝트는 날씨, 요일, 계절, 메뉴 등 실제 요소를 기반으로 점심과 저녁 고객 수를 예측하는 모델을 성공적으로 구축하였습니다. 학습과 평가 과정을 통해 다음과 같은 결과를 얻었습니다:
 
-- XGBoost·Random Forest와 같은 최신 머신러닝 기법을 활용함으로써 비선형·다차원 데이터를 효과적으로 처리할 수 있었으며, One-hot·빈도 기반 인코딩 등 다양한 특성 인코딩 기법과 MAE·MSE 지표 평가를 통해 현장 적용이 가능한 신뢰도 높은 결과를 도출하였다.
+1. **XGBoost 모델 성능**:  
+   - XGBoost를 이용한 점심 및 저녁 예측은 **MAE와 MSE가 baseline(평균)보다 현저히 낮아**, 모델이 데이터의 중요한 특성을 잘 학습했음을 보여줍니다.  
+   - 예를 들어, 특별한 날과 기온, 요일(weekday)이 고객 수에 직접적인 영향을 미치며, XGBoost는 이러한 경향을 정확하게 반영합니다.
+
+2. **Baseline과의 비교**:  
+   - Baseline은 모든 날짜에 대해 과거 평균을 사용하므로 **실제 변동을 반영하지 못하며**, 특히 공휴일이나 이상 기온, 특정 요일의 패턴에서 오차가 크게 발생합니다.
+
+3. **입력 변수의 영향**:  
+   - `Special_Day`, `Avg_Temp`, `Total_Emp`와 같은 변수와 **메뉴 임베딩**, 그리고 **요일(Weekday) 인코딩**을 결합하여 모델이 메뉴·날짜·요일과 고객 수 사이의 복잡한 관계를 잘 파악할 수 있습니다.  
+   - 또한 `Emp_Ratio` 및 주/월에 대한 sin/cos 인코딩을 적용하여 계절 및 요일별 패턴을 더욱 정교하게 반영하였습니다.
+
+4. **실제 적용 가능성**:  
+   - 정확한 고객 수 예측은 주방과 관리자가 **재료, 인력, 메뉴 계획**을 더 효율적으로 수행할 수 있도록 돕습니다.
+   - 시스템은 주간 단위, 메뉴별 예측으로 확장 가능하며, **낭비 감소 및 비용 최적화**를 위한 경영 전략과 통합할 수 있습니다.
+
+XGBoost 모델과 피처 엔지니어링, 메뉴 임베딩, 요일 인코딩의 결합은 일일 식수 수요 예측에서 뛰어난 성능을 보여주었으며, baseline보다 우수합니다. 이 프로젝트는 실제 급식 관리나 구내식당 운영에 바로 적용 가능한 실용적인 도구를 제공합니다.
 
 ---
 
