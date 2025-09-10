@@ -28,7 +28,7 @@
 * 총 1205행 데이터, 출처는 Dacon (데이터 고객/주문 : [Dacon 링크](https://dacon.io/competitions/official/235743/overview/description?utm_source=chatgpt.com))
 * 날씨 데이터 출처 : [기상청 데이터](https://data.kma.go.kr/climate/RankState/selectRankStatisticsDivisionList.do?pgmNo=179)
 * 휴일 및 특별일 데이터는 달력에서 수집
-* 칼로리 정보 : ChatGPT로 수집집
+* 칼로리 정보 : ChatGPT로 수집
   
 ---
 ### (2) 프로젝트 폴더 구조
