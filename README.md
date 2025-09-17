@@ -19,10 +19,10 @@
 - XGBoost, Random Forest 등 비선형적·복잡한 패턴을 잘 처리할 수 있는 머신러닝 알고리즘 사용
 - 메뉴 정보 인코딩(원-핫, 빈도 기반) 및 직원 수 예측 등 특화된 Feature Engineering 적용
   
----
+
 
 ## 2. 데이터 및 구조  
----
+
 ### (1) 데이터 출처
 ### - 데이터 탐색
 * 총 1205행 데이터, 출처는 Dacon (데이터 고객/주문 : [Dacon 링크](https://dacon.io/competitions/official/235743/overview/description?utm_source=chatgpt.com))
@@ -30,7 +30,7 @@
 * 휴일 및 특별일 데이터는 달력에서 수집
 * 칼로리 정보 : ChatGPT로 수집
   
----
+
 ### (2) 프로젝트 폴더 구조
 ```
 
@@ -67,7 +67,7 @@ SmartMealForecast/
 
 
 ## 3. 데이터 탐색
----
+
 ### (1) 데이터 기본 현황
 
 **데이터셋 : merged_data_2_kcal.csv**
@@ -103,10 +103,10 @@ SmartMealForecast/
 <img width="800" height="600" alt="barplot_season_total_customers" src="https://github.com/user-attachments/assets/f8c41a3e-897b-46eb-ac91-1c6b85d3ee80" />
 
 
----
+
 
 ## 4. 전처리 및 특징 엔지니어링
----
+
 1. **결측치 처리 (Missing Values)**  
    - 일부 날짜·메뉴 데이터에 결측치가 존재하여 평균값 또는 최빈값으로 대체하거나, 예측에 필요 없는 경우 해당 행(row)을 제거하였다.  
    - 예: 특정 날 메뉴 칼로리 값이 비어 있는 경우 동일 메뉴의 평균 칼로리를 사용.
@@ -129,10 +129,10 @@ SmartMealForecast/
 6. **시간 시퀀스 특성 반영 (Time-series Features)**  
    - 이전 일·주·월의 고객 수 이동평균(lag features, rolling mean)과 증감률을 계산하여 수요 예측의 패턴성을 높였다.
 
----
+
 
 ## 5. 코드
----
+
 
 ### train_2.py 파일 코드 설명
 ---
@@ -145,7 +145,6 @@ SmartMealForecast/
 * `xgboost` : XGBoost 모델
 * `gensim.models` : Word2Vec
 
----
 
 **(1) 메뉴 컬럼 리스트 정의**
 ```python
@@ -282,7 +281,7 @@ joblib.dump(model_dinner_xgb, os.path.join(MODEL_DIR, "xgboost_dinner_model_2.pk
 - XGBoost 모델 저장
 
 ### prediction_2.py 파일 코드 설명( 모든 데이터 가지고 실행)
----
+
 **라이브러리**	
 
 * pandas, numpy: 표(데이터프레임)와 수치 연산
@@ -310,18 +309,18 @@ df.to_csv(save_path, index=False)
 ```
 **실행결과 예:**
 
-| Date       | Lunch_Count | Dinner_Count | Pred_Lunch_XGB | Pred_Dinner_XGB | Baseline_Lunch | Baseline_Dinner |
-|------------|------------|--------------|----------------|-----------------|----------------|-----------------|
-| 2021-01-13 | 913        | 360          | 913            | 360             | 890            | 462             |
-| 2021-01-14 | 1038       | 439          | 822            | 405             | 890            | 462             |
-| 2021-01-15 | 702        | 277          | 638            | 324             | 890            | 462             |
-| 2021-01-18 | 1277       | 460          | 1254           | 477             | 890            | 462             |
-| 2021-01-19 | 1038       | 414          | 1038           | 414             | 890            | 462             |
+식수 예측의 결과: 
+
+| Date       | 실제점심 | 실제저녁 | 점심_XGB | 저녁_XGB |
+|------------|------------|--------------|----------------|-----------------|
+| 2021-01-13 | 913        | 360          | 913            | 360             |
+| 2021-01-14 | 1038       | 439          | 822            | 405             |
+| 2021-01-15 | 702        | 277          | 638            | 324             |
+| 2021-01-18 | 1277       | 460          | 1254           | 477             | 
+| 2021-01-19 | 1038       | 414          | 1038           | 414             | 
 
 
 
-
----
 ## 6. 실행 방법  
 1. 필요한 데이터 준비: `data/` 폴더에 merged_data_2_kcal.csv 데이터 저장
 2. 모델 훈련 및 예측 실행
@@ -332,7 +331,7 @@ python prediction/train_2.py
 python prediction/prediction_2.py
 ```
 ## 7. 실행결과 분석
----
+
 
 * **실행결과 예:**
 
@@ -360,7 +359,12 @@ python prediction/prediction_2.py
 
 
 * **에러 지표**:
-<img width="1600" height="700" alt="mae_comparison_fixed_chart" src="https://github.com/user-attachments/assets/caa9c940-dc32-4d9e-86b7-b7e1c59420e3" />
+
+  
+<img width="1600" height="700" alt="mae_lunch_dinner_separate" src="https://github.com/user-attachments/assets/8353d10e-303b-434d-ab76-88052ef1b8a3" />
+
+<img width="1200" height="600" alt="image" src="https://github.com/user-attachments/assets/c350cb7c-d4ab-4c80-bd57-6ba419aac345" />
+
 
 * XGBoost(XGB낮은 MAE 및 정규화 MAE 수치를 기록하며 뛰어난 예측 성능을 보였습니다.
   
@@ -385,7 +389,7 @@ python prediction/prediction_2.py
 
 XGBoost 모델과 피처 엔지니어링, 메뉴 임베딩, 요일 인코딩의 결합은 일일 식수 수요 예측에서 뛰어난 성능을 보여주었으며, baseline보다 우수합니다. 이 프로젝트는 실제 급식 관리나 구내식당 운영에 바로 적용 가능한 실용적인 도구를 제공합니다.
 
----
+
 
 ## 8. Author: Nguyen Thi Dung ( 응웬티둥)
----
+
