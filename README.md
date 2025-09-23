@@ -345,7 +345,8 @@ python prediction/prediction_2.py
 * **predict_by_date.py 살행결과**
 
 
-<img width="1730" height="789" alt="image" src="https://github.com/user-attachments/assets/07c085e3-dd80-4769-acf0-678f86a3dea6" />
+<img width="664" height="803" alt="image" src="https://github.com/user-attachments/assets/e2f9ae0d-ca16-4fd9-912c-659726d1d78b" />
+
 
 
 * **prediction_2.py 살행결과**
