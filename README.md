@@ -327,6 +327,7 @@ df.to_csv(save_path, index=False)
 ```bash
 python prediction/train_2.py  
 python prediction/prediction_2.py
+python prediction/predict_by_date.py
 ```
 ## 7. 실행결과 분석
 
