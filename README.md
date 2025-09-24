@@ -268,6 +268,8 @@ mse_dinner, mae_dinner = evaluate(y_dinner_test, y_dinner_pred)
 
 **(14) Baseline(평균 예측) 생성**
 
+Baseline은 과거 점심과 저녁 식사 고객 수를 평균값으로 예측합니다. 이 모델은 더 복잡한 모델들과 비교하기 위한 기준점으로 만들어졌다
+
 **(15) 평가/예측/모델 저장**
 ```python
 eval_df.to_csv(os.path.join(EVALUATION_DIR, "train_2_evaluation.csv"), index=False)
