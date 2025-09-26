@@ -1,13 +1,12 @@
 
-# SmartMealForecast 프로젝트 
+# SmartMealForecast (식수 예측)  
 
 ## 1. 프로젝트 소개  
-**작품명**: SmartMealForecast (식수 예측)  
 
-**최종 목표** : 
+**최종 목표** 
 본 프로젝트의 목표는 과거 고객/식수 데이터, 날씨, 특별일 정보, 사내 인원 정보 등을 기반으로 하루 동안 준비해야 할 점심·저녁 식수량을 예측하는 것입니다. 이를 통해 음식 낭비를 줄이고 부족·과잉 공급을 방지하여 운영 효율성을 높이고 고객 만족도를 향상시키고자 합니다.
 
-**예측의 중요성**:
+**식수량 예측의 중요성**
 
 - 정확한 수요 예측 → 음식 낭비 감소
 
@@ -15,7 +14,7 @@
 
 - 고객 만족도 향상
 
-**사용 알고리즘**  
+**사용 방법론**  
 - XGBoost, Random Forest 등 비선형적·복잡한 패턴을 잘 처리할 수 있는 머신러닝 알고리즘 사용
 - 메뉴 정보 인코딩(원-핫, 빈도 기반) 및 직원 수 예측 등 특화된 Feature Engineering 적용
   
@@ -23,15 +22,15 @@
 
 ## 2. 데이터 및 구조  
 
-### (1) 데이터 출처
-### - 데이터 탐색
+### 2.1 데이터 수집
+
 * 총 1205행 데이터, 출처는 Dacon (데이터 고객/주문 : [Dacon 링크](https://dacon.io/competitions/official/235743/overview/description?utm_source=chatgpt.com))
 * 날씨 데이터 출처 : [기상청 데이터](https://data.kma.go.kr/climate/RankState/selectRankStatisticsDivisionList.do?pgmNo=179)
 * 휴일 및 특별일 데이터는 달력에서 수집
 * 칼로리 정보 : ChatGPT로 수집
   
 
-### (2) 프로젝트 폴더 구조
+### 2.2 프로젝트 폴더 구조
 ```
 
 SmartMealForecast/
@@ -66,9 +65,9 @@ SmartMealForecast/
 ````
 
 
-## 3. 데이터 탐색
+## 3. 데이터 분석
 
-### (1) 데이터 기본 현황
+### 3.1 데이터 기본 현황
 
 **데이터셋 : merged_data_2_kcal.csv**
 
@@ -82,7 +81,7 @@ SmartMealForecast/
 | **저녁 메뉴**            | `Dinner_Rice`, `Dinner_Soup`, `Dinner_Main_Dish`, `Dinner_Side_Dish_1`… + kcal 해당                      | 각 메뉴명 및 칼로리               |
 | **기타**                 | `Station` (위치: 서울), `Avg_Temp`, `Max_Temp`, `Min_Temp`, `Temp_Range`, `Special_Day`                  | 날씨 및 특수일 정보               |
 
-### (2) 주요 인사이트
+### 3.2 주요 인사이트
 
 * **특별일에 고객 수 급증**
 
@@ -129,10 +128,10 @@ SmartMealForecast/
 
 
 
-## 5. 코드
+## 5. 방법론 및 구현
 
 
-### train_2.py 파일 코드 설명
+### 5.1 train_2.py 파일 코드 설명
 
 * 주요 라이브러리 임포트
 * `pandas`, `numpy` : 데이터 처리 및 수치 계산
@@ -225,21 +224,24 @@ model_dinner_xgb = train_xgb(X_train, y_dinner_train, X_test, y_dinner_test)
 
 ```
 - X_tr, y_tr : 학습(Train)용 입력 데이터와 정답(라벨), X_val, y_val : 검증(Validation)용 입력 데이터와 정답(라벨)( 학습 데이터와 검증 데이터를 받아서 XGBoost 회귀 모델을 만들어 반환합니다)
-- DMatrix로 변환 :
+  
+- DMatrix로 변환 
       - XGBoost는 자체 데이터 구조인 DMatrix를 사용합니다.
       - DMatrix는 메모리와 계산 속도를 최적화한 자료구조로, 모델 학습·예측 때 더 빠르게 동작하게 해줍니다.
       - label=y_tr로 실제 정답 값을 함께 지정합니다.
-- 하이퍼파라미터 설정 :
+  
+- 하이퍼파라미터 설정
       - objective : 학습 목적 함수. 'reg:squarederror'는 회귀(연속값 예측)용 제곱오차를 의미합니다.
       - eval_metric : 평가 지표. rmse는 root mean squared error(평균제곱근오차)입니다.
       - seed : 랜덤 시드 고정. 재현성(같은 결과)을 위해 사용합니다.
       - max_depth : 트리 최대 깊이. 클수록 더 복잡한 모델이 됩니다(과적합 주의).
       - eta : 학습률(learning rate). 한 번의 학습 스텝에서 파라미터가 얼마나 업데이트될지 결정.
-- 학습과 검증 데이터 지정:
+  
+- 학습과 검증 데이터 지정
     - 학습 과정에서 학습(train) 데이터와 검증(eval) 데이터의 오차를 함께 확인하기 위해 튜플로 지정.
     - xgb.train()이 진행될 때 각 단계마다 두 데이터셋의 RMSE를 출력합니다.
  
-- 모델 학습:
+- 모델 학습
     - params : 앞에서 지정한 하이퍼파라미터.
     - num_boost_round=500 : 최대 500회(부스팅 라운드)까지 반복 학습.
     - evals=evals : 매 라운드마다 학습·검증 오차 출력.
@@ -247,7 +249,7 @@ model_dinner_xgb = train_xgb(X_train, y_dinner_train, X_test, y_dinner_test)
     - verbose_eval=50 : 50라운드마다 학습 상황을 출력.
     - 이렇게 하면 XGBoost 모델이 학습되고, 조기 종료가 적용되어 불필요한 반복을 줄일 수 있다.
  
-- 실제 사용:
+- 실제 사용
     - model_lunch_xgb : 점심 고객 수(Lunch_Count) 예측 모델
     - model_dinner_xgb : 저녁 고객 수(Dinner_Count) 예측 모델
 
@@ -280,7 +282,7 @@ joblib.dump(model_dinner_xgb, os.path.join(MODEL_DIR, "xgboost_dinner_model_2.pk
 ```
 - XGBoost 모델 저장
 
-### prediction_2.py 파일 코드 설명( 모든 데이터 가지고 실행)
+### 5.2 prediction_2.py 파일 코드 설명( 모든 데이터 가지고 실행)
 
 **라이브러리**	
 
@@ -321,7 +323,9 @@ df.to_csv(save_path, index=False)
 
 
 
-## 6. 실행 방법  
+## 6. 실행 방법  및 실행결과 분석
+### 6.1 실행 방법
+
 1. 필요한 데이터 준비: `data/` 폴더에 merged_data_2_kcal.csv 데이터 저장
 2. 모델 훈련 및 예측 실행
 3. 사용자 지정 날짜로 실행할 경우 predict_by_date.py 사용
@@ -331,10 +335,9 @@ python prediction/train_2.py
 python prediction/prediction_2.py
 python prediction/predict_by_date.py
 ```
-## 7. 실행결과 분석
+### 6.2 실행결과 분석
 
-
-* **실행결과 예:**
+* **실행결과 예**
 
 | Date       | 실제점심 | 실제저녁 | 점심_XGB | 저녁_XGB |
 |------------|------------|--------------|----------------|-----------------|
@@ -360,14 +363,14 @@ python prediction/predict_by_date.py
 
 
 
-* **에러 지표**:
+* **에러 지표**
 
   
 <img width="1600" height="700" alt="mae_lunch_dinner_separate" src="https://github.com/user-attachments/assets/8353d10e-303b-434d-ab76-88052ef1b8a3" />
 
 <img width="1200" height="600" alt="image" src="https://github.com/user-attachments/assets/c350cb7c-d4ab-4c80-bd57-6ba419aac345" />
 
-**비교 해보기**:
+**비교 해보기**
 
 * Baseline은 과거 점심과 저녁 식사 고객 수를 평균값으로 예측합니다. 이 모델은 더 복잡한 모델들과 비교하기 위한 기준점으로 만들어졌으며, 선택된 모델이 실제로 개선 효과가 있는지 평가하는 데 사용됩니다.
 
@@ -375,7 +378,7 @@ python prediction/predict_by_date.py
 
 * XGBoost는 강력한 부스팅 알고리즘으로 구현되었으며, **점심과 저녁 모두에서 가장 낮은 MAE = 2.52%**를 기록했습니다. 이는 RF 대비 거의 절반 수준으로 MAE가 감소한 것이며, XGB가 데이터의 특성을 더 효율적으로 활용하여 예측 정확도를 크게 향상시킴을 보여줍니다. 실제로 XGBoost는 낮은 MAE와 정규화 MAE 수치로 보여줍니다
 
-**따라서**: 
+**따라서**
 
 * Baseline (과거 평균) → MAE 20.23% (정확도 낮음)
 
