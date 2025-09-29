@@ -394,7 +394,7 @@ python prediction/predict_by_date.py
 
 * GBoost와 Random Forest와 같은 최신 머신러닝 모델을 활용하여 비선형적이며 다차원적인 데이터를 효과적으로 처리할 수 있었으며, One-hot Encoding, 빈도 기반 인코딩 등 다양한 특성 인코딩 기법을 적용하고 MAE, MSE 등 지표를 기반으로 평가를 수행한 결과, 현장에 적용 가능한 신뢰도 높은 결과를 도출할 수 있었습니다.
   
-## 결론
+## 7. 결론
 
 **SmartMealForecast** 프로젝트는 날씨, 요일, 계절, 메뉴 등 실제 요소를 기반으로 점심과 저녁 고객 수를 예측하는 모델을 성공적으로 구축하였습니다. 학습과 평가 과정을 통해 다음과 같은 결과를 얻었습니다:
 
@@ -414,5 +414,5 @@ XGBoost 모델과 피처 엔지니어링, 메뉴 임베딩, 요일 인코딩의 
 
 
 
-## 7. Author: Nguyen Thi Dung ( 응웬티둥)
+## 8. Author: Nguyen Thi Dung ( 응웬티둥)
 
