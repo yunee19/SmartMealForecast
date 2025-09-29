@@ -225,23 +225,23 @@ model_lunch_xgb = train_xgb(X_train, y_lunch_train, X_test, y_lunch_test)
 model_dinner_xgb = train_xgb(X_train, y_dinner_train, X_test, y_dinner_test)
 
 ```
-- `X_tr`, `y_tr` : 학습(Train)용 입력 데이터와 정답(라벨), `X_val`, `y_val` : 검증(Validation)용 입력 데이터와 정답(라벨)( 학습 데이터와 검증 데이터를 받아서 XGBoost 회귀 모델을 만들어 반환합니다)
+- `X_tr`, `y_tr` : 학습(Train)용 입력 데이터와 정답(라벨)
+- `X_val`, `y_val` : 검증(Validation)용 입력 데이터와 정답(라벨)( 학습 데이터와 검증 데이터를 받아서 XGBoost 회귀 모델을 만들어 반환합니다)
   
-- `DMatrix`로 변환 
-      - XGBoost는 자체 데이터 구조인 DMatrix를 사용합니다.
-      - DMatrix는 메모리와 계산 속도를 최적화한 자료구조로, 모델 학습·예측 때 더 빠르게 동작하게 해줍니다.
-      - `label=y_tr`로 실제 정답 값을 함께 지정합니다.
+- `DMatrix`로 변환
+    - XGBoost는 자체 데이터 구조인 DMatrix를 사용합니다.DMatrix는 메모리와 계산 속도를 최적화한 자료구조로, 모델 학습·예측 때 더 빠르게 동작하게 해줍니다.
+    - `label=y_tr`로 실제 정답 값을 함께 지정합니다.
   
 - 하이퍼파라미터 설정
-      - `objective` : 학습 목적 함수. 'reg:squarederror'는 회귀(연속값 예측)용 제곱오차를 의미합니다.
-      - `eval_metric` : 평가 지표. rmse는 root mean squared error(평균제곱근오차)입니다.
-      - `seed` : 랜덤 시드 고정. 재현성(같은 결과)을 위해 사용합니다.
-      - `max_depth` : 트리 최대 깊이. 클수록 더 복잡한 모델이 됩니다(과적합 주의).
-      - eta : 학습률(learning rate). 한 번의 학습 스텝에서 파라미터가 얼마나 업데이트될지 결정.
+    -  `objective` : 학습 목적 함수. 'reg:squarederror'는 회귀(연속값 예측)용 제곱오차를 의미합니다.
+    -   eval_metric` : 평가 지표. rmse는 root mean squared error(평균제곱근오차)입니다.
+    -  `seed` : 랜덤 시드 고정. 재현성(같은 결과)을 위해 사용합니다.
+    -   `max_depth` : 트리 최대 깊이. 클수록 더 복잡한 모델이 됩니다(과적합 주의).
+    -   eta : 학습률(learning rate). 한 번의 학습 스텝에서 파라미터가 얼마나 업데이트될지 결정.
   
 - 학습과 검증 데이터 지정
-    - 학습 과정에서 학습(train) 데이터와 검증(eval) 데이터의 오차를 함께 확인하기 위해 튜플로 지정.
-    - `xgb.train()`이 진행될 때 각 단계마다 두 데이터셋의 RMSE를 출력합니다.
+    -   학습 과정에서 학습(train) 데이터와 검증(eval) 데이터의 오차를 함께 확인하기 위해 튜플로 지정.
+    -    `xgb.train()`이 진행될 때 각 단계마다 두 데이터셋의 RMSE를 출력합니다.
  
 - 모델 학습
     - `params` : 앞에서 지정한 하이퍼파라미터.
