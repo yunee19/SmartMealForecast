@@ -311,7 +311,7 @@ df['Pred_Dinner_XGB'] = model_dinner_xgb.predict(xgb.DMatrix(X)).round().astype(
 save_path = os.path.join(RESULTS_DIR, "predictions_all_data_2.csv")
 df.to_csv(save_path, index=False)
 ```
-**실행결과 예:**
+**실행결과 예**
 
 식수 예측의 결과: 
 
