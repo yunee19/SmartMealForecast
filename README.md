@@ -90,7 +90,7 @@ SmartMealForecast/
 <img width="1600" height="600" alt="barplot_special_day_lunch_count_customers" src="https://github.com/user-attachments/assets/3c267b3b-e875-48a8-9f77-b618cbaec283" />
 
 
-* **요일 특정 : 월요일에 고갯수 급증**
+* **요일 특정 월요일에 고갯수 급증**
 
 <img width="1000" height="600" alt="avg_customers_by_weekday" src="https://github.com/user-attachments/assets/457c37f7-5a0f-43dc-930e-937398b35a77" />
 
