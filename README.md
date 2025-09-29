@@ -159,13 +159,13 @@ menu_columns = [
 - 모델 입력으로 사용할 기본 특성을 선택
 - Season을 범주형 코드로 변환하여 수치형 모델에서 사용 가능하도록 함
 
-**(4) Pre_Special_Day (특별일 전/후 변수)**
+**(4) `Pre_Special_Day` (특별일 전/후 변수)**
 - 특별일 전(전날) 효과를 반영
 
-**(5) Actual_Emp(실제 근무자) 예측 모델 (내부 피처로 사용)**
+**(5) `Actual_Emp`(실제 근무자) 예측 모델 (내부 피처로 사용)**
   - Actual_Emp(실제 출근자 수)가 누락되거나 실시간 수집이 불가능한 경우를 대비해, 다른 특성으로 Actual_Emp를 예측하고 이를 후속 feature로 사용함
 
-**(6) Emp_Ratio 생성 (예측된 실제 인원 / 총 인원)**
+**(6) `Emp_Ratio` 생성 (예측된 실제 인원 / 총 인원)**
 - 근무율(예: 실제 출근자 비율)을 특성으로 포함하여 고객 수와의 상관관계를 반영
 
 **(7) 시간(주기성) 인코딩: Sin/Cos**
@@ -188,8 +188,8 @@ w2v_model.save(os.path.join(MODEL_DIR, "w2v_menu.model"))
 
 ```
 - 메뉴 텍스트(예: 반찬 이름 등)를 분산 임베딩(Word2Vec)으로 표현하여 의미적 유사도를 특성으로 반영.
-- vector_size=100 은 각 메뉴를 100차원 벡터로 표현.
-- min_count=1로 설정되어 있어 등장 한 번만 해도 임베딩에 포함됨(희소한 메뉴까지 반영됨).
+- `vector_size=100` 은 각 메뉴를 100차원 벡터로 표현.
+- `min_count=1`로 설정되어 있어 등장 한 번만 해도 임베딩에 포함됨(희소한 메뉴까지 반영됨).
 
   
 **(10) 특성 결합 및 컬럼명 정리**
@@ -223,35 +223,35 @@ model_lunch_xgb = train_xgb(X_train, y_lunch_train, X_test, y_lunch_test)
 model_dinner_xgb = train_xgb(X_train, y_dinner_train, X_test, y_dinner_test)
 
 ```
-- X_tr, y_tr : 학습(Train)용 입력 데이터와 정답(라벨), X_val, y_val : 검증(Validation)용 입력 데이터와 정답(라벨)( 학습 데이터와 검증 데이터를 받아서 XGBoost 회귀 모델을 만들어 반환합니다)
+- `X_tr`, `y_tr` : 학습(Train)용 입력 데이터와 정답(라벨), `X_val`, `y_val` : 검증(Validation)용 입력 데이터와 정답(라벨)( 학습 데이터와 검증 데이터를 받아서 XGBoost 회귀 모델을 만들어 반환합니다)
   
-- DMatrix로 변환 
+- `DMatrix`로 변환 
       - XGBoost는 자체 데이터 구조인 DMatrix를 사용합니다.
       - DMatrix는 메모리와 계산 속도를 최적화한 자료구조로, 모델 학습·예측 때 더 빠르게 동작하게 해줍니다.
-      - label=y_tr로 실제 정답 값을 함께 지정합니다.
+      - `label=y_tr`로 실제 정답 값을 함께 지정합니다.
   
 - 하이퍼파라미터 설정
-      - objective : 학습 목적 함수. 'reg:squarederror'는 회귀(연속값 예측)용 제곱오차를 의미합니다.
-      - eval_metric : 평가 지표. rmse는 root mean squared error(평균제곱근오차)입니다.
-      - seed : 랜덤 시드 고정. 재현성(같은 결과)을 위해 사용합니다.
-      - max_depth : 트리 최대 깊이. 클수록 더 복잡한 모델이 됩니다(과적합 주의).
+      - `objective` : 학습 목적 함수. 'reg:squarederror'는 회귀(연속값 예측)용 제곱오차를 의미합니다.
+      - `eval_metric` : 평가 지표. rmse는 root mean squared error(평균제곱근오차)입니다.
+      - `seed` : 랜덤 시드 고정. 재현성(같은 결과)을 위해 사용합니다.
+      - `max_depth` : 트리 최대 깊이. 클수록 더 복잡한 모델이 됩니다(과적합 주의).
       - eta : 학습률(learning rate). 한 번의 학습 스텝에서 파라미터가 얼마나 업데이트될지 결정.
   
 - 학습과 검증 데이터 지정
     - 학습 과정에서 학습(train) 데이터와 검증(eval) 데이터의 오차를 함께 확인하기 위해 튜플로 지정.
-    - xgb.train()이 진행될 때 각 단계마다 두 데이터셋의 RMSE를 출력합니다.
+    - `xgb.train()`이 진행될 때 각 단계마다 두 데이터셋의 RMSE를 출력합니다.
  
 - 모델 학습
-    - params : 앞에서 지정한 하이퍼파라미터.
-    - num_boost_round=500 : 최대 500회(부스팅 라운드)까지 반복 학습.
-    - evals=evals : 매 라운드마다 학습·검증 오차 출력.
-    - early_stopping_rounds=50 : 검증 오차가 50번 연속 개선되지 않으면 학습 조기 종료(과적합 방지).
-    - verbose_eval=50 : 50라운드마다 학습 상황을 출력.
+    - `params` : 앞에서 지정한 하이퍼파라미터.
+    - `num_boost_round=500` : 최대 500회(부스팅 라운드)까지 반복 학습.
+    - `evals=evals` : 매 라운드마다 학습·검증 오차 출력.
+    - `early_stopping_rounds=50` : 검증 오차가 50번 연속 개선되지 않으면 학습 조기 종료(과적합 방지).
+    - `verbose_eval=50` : 50라운드마다 학습 상황을 출력.
     - 이렇게 하면 XGBoost 모델이 학습되고, 조기 종료가 적용되어 불필요한 반복을 줄일 수 있다.
  
 - 실제 사용
-    - model_lunch_xgb : 점심 고객 수(Lunch_Count) 예측 모델
-    - model_dinner_xgb : 저녁 고객 수(Dinner_Count) 예측 모델
+    - `model_lunch_xgb` : 점심 고객 수(Lunch_Count) 예측 모델
+    - `model_dinner_xgb` : 저녁 고객 수(Dinner_Count) 예측 모델
 
 **(13) 예측 및 평가**
 
@@ -286,11 +286,11 @@ joblib.dump(model_dinner_xgb, os.path.join(MODEL_DIR, "xgboost_dinner_model_2.pk
 
 **라이브러리**	
 
-* pandas, numpy: 표(데이터프레임)와 수치 연산
-* joblib: 학습된 모델 불러오기/저장
-* os: 파일 경로 처리
-* xgboost: 예측 모델
-* Word2Vec: 메뉴 이름을 벡터로 변환(임베딩)
+* `pandas`, `numpy`: 표(데이터프레임)와 수치 연산
+* `joblib`: 학습된 모델 불러오기/저장
+* `os`: 파일 경로 처리
+* `xgboost`: 예측 모델
+* `Word2Vec`: 메뉴 이름을 벡터로 변환(임베딩)
 
 **모델 로드 (점심/저녁)**
 ```python
@@ -351,7 +351,8 @@ python prediction/predict_by_date.py
 * **predict_by_date.py 살행결과**
 
 
-<img width="664" height="803" alt="image" src="https://github.com/user-attachments/assets/e2f9ae0d-ca16-4fd9-912c-659726d1d78b" />
+<img width="969" height="753" alt="image" src="https://github.com/user-attachments/assets/9e76db2c-386c-423e-8871-36aa52f5ceed" />
+
 
 
 
@@ -395,15 +396,15 @@ python prediction/predict_by_date.py
 
 **SmartMealForecast** 프로젝트는 날씨, 요일, 계절, 메뉴 등 실제 요소를 기반으로 점심과 저녁 고객 수를 예측하는 모델을 성공적으로 구축하였습니다. 학습과 평가 과정을 통해 다음과 같은 결과를 얻었습니다:
 
-1. **XGBoost 모델 성능**:  
+1. **XGBoost 모델 성능**
    - XGBoost를 이용한 점심 및 저녁 예측은 **MAE와 MSE가 baseline(평균)보다 현저히 낮아**, 모델이 데이터의 중요한 특성을 잘 학습했음을 보여줍니다.  
    - 예를 들어, 특별한 날과 기온, 요일(weekday)이 고객 수에 직접적인 영향을 미치며, XGBoost는 이러한 경향을 정확하게 반영합니다.
 
-2. **입력 변수의 영향**:  
+2. **입력 변수의 영향** 
    - `Special_Day`, `Avg_Temp`, `Total_Emp`와 같은 변수와 **메뉴 임베딩**, 그리고 **요일(Weekday) 인코딩**을 결합하여 모델이 메뉴·날짜·요일과 고객 수 사이의 복잡한 관계를 잘 파악할 수 있습니다.  
    - 또한 `Emp_Ratio` 및 주/월에 대한 sin/cos 인코딩을 적용하여 계절 및 요일별 패턴을 더욱 정교하게 반영하였습니다.
 
-3. **실제 적용 가능성**:  
+3. **실제 적용 가능성** 
    - 정확한 고객 수 예측은 주방과 관리자가 **재료, 인력, 메뉴 계획**을 더 효율적으로 수행할 수 있도록 돕습니다.
    - 시스템은 일일 고객 수 예측과 메뉴 추천, 칼로리 계산까지 제공하며, 실제 급식 관리나 구내식당 운영에 즉시 적용 가능한 실용적인 도구입니다.
 
@@ -411,5 +412,5 @@ XGBoost 모델과 피처 엔지니어링, 메뉴 임베딩, 요일 인코딩의 
 
 
 
-## 8. Author: Nguyen Thi Dung ( 응웬티둥)
+## 7. Author: Nguyen Thi Dung ( 응웬티둥)
 
